@@ -61,9 +61,9 @@ android {
         }
     }
      lintOptions {
-        disable 'Deprecated'
         warning 'deprecation'
         warning 'unchecked'
+
     }
 
 }
