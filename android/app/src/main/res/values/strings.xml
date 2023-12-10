@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">Eventro</string>
+    <string name="facebook_app_id">1308631113176616</string>
+    <string name="fb_login_protocol_scheme">fb718bec10f3359a4c48135ca9a334d8ee</string>
+    <string name="facebook_client_token">23f76c5394765b8df2754332fed90ef1</string>
+</resources>
