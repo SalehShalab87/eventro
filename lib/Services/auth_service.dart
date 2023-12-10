@@ -78,27 +78,35 @@ class AuthService {
         return; // Exit if user cancels sign-in
       }
 
-      // Create a credential from the access token
-      final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      // Ensure that loginResult.accessToken is not null before using ! operator
+      if (loginResult.accessToken != null) {
+        // Create a credential from the access token
+        final OAuthCredential facebookAuthCredential =
+            FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-      // Show loading circle
-      showLoadingCircle(context);
+        // Show loading circle
+        showLoadingCircle(context);
 
-      // Sign in to Firebase with the Facebook credential
-      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+        // Sign in to Firebase with the Facebook credential
+        await FirebaseAuth.instance
+            .signInWithCredential(facebookAuthCredential);
 
-      // Pop the loading circle
-      Navigator.pop(context);
+        // Pop the loading circle
+        Navigator.pop(context);
 
-      // Check if sign-in is successful
-      if (FirebaseAuth.instance.currentUser != null) {
-        // Navigate to the home screen
-        Navigator.pushReplacementNamed(context, '/home');
+        // Check if sign-in is successful
+        if (FirebaseAuth.instance.currentUser != null) {
+          // Navigate to the home screen
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          // Handle the case where the user is not signed in
+          // Show an error message or take appropriate action
+          showErrorMessage(context, "Facebook Sign-In failed. User not found.");
+        }
       } else {
-        // Handle the case where the user is not signed in
-        // Show an error message or take appropriate action
-        showErrorMessage(context, "Facebook Sign-In failed. User not found.");
+        // Handle the case where accessToken is null
+        showErrorMessage(
+            context, "Facebook Sign-In failed. Access token is null.");
       }
     } catch (e) {
       // Pop the loading circle in case of an error

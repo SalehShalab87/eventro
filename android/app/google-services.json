@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "86917190723",
+    "project_id": "eventro-24121",
+    "storage_bucket": "eventro-24121.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86917190723:android:fae87b5581e81fd17a30f6",
+        "android_client_info": {
+          "package_name": "com.example.eventro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "86917190723-mbeg6lhecef37iruu7sptnu3t73a8vdq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eventro",
+            "certificate_hash": "b10e909cffded891d457641326ae72e1d8c687dd"
+          }
+        },
+        {
+          "client_id": "86917190723-hpq46hhol7r8vtujmil34ddua3cebkmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASr2eeue8be4mj_7XLMjxYNzcfxcbiHMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86917190723-hpq46hhol7r8vtujmil34ddua3cebkmv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "86917190723-3gj9oujinvfunkelrbn7itsg9c87pq6k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eventro"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
