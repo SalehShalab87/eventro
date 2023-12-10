@@ -1,3 +1,4 @@
+import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/Onboarding_pages.dart';
 import 'package:eventro/pages/auth_page.dart';
 import 'package:eventro/pages/login_page.dart';
@@ -46,6 +47,7 @@ class Eventro extends StatelessWidget {
         '/home': (context) => const AuthPage(),
         'onboard': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginPage(),
+        '/notifications': (context) => const NotificationPage(),
       },
     );
   }
