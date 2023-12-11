@@ -16,11 +16,13 @@ class RegitserPage extends StatefulWidget {
   @override
   State<RegitserPage> createState() => _RegisterPageState();
 }
+
 class _RegisterPageState extends State<RegitserPage> {
   // Text field Editing Controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmedPasswordController = TextEditingController();
+  final TextEditingController _confirmedPasswordController =
+      TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
   // Dispose controllers
@@ -55,7 +57,8 @@ class _RegisterPageState extends State<RegitserPage> {
         );
 
         // Set the display name for the newly created user
-        await FirebaseAuth.instance.currentUser?.updateDisplayName(_nameController.text.trim());
+        await FirebaseAuth.instance.currentUser
+            ?.updateDisplayName(_nameController.text.trim());
 
         // Pop the loading circle
         Navigator.pop(context);
@@ -84,7 +87,8 @@ class _RegisterPageState extends State<RegitserPage> {
   }
 
   bool PasswordConfirmed() {
-    return _passwordController.text.trim() == _confirmedPasswordController.text.trim();
+    return _passwordController.text.trim() ==
+        _confirmedPasswordController.text.trim();
   }
 
   // Show Wrong Email method
@@ -117,7 +121,6 @@ class _RegisterPageState extends State<RegitserPage> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +286,7 @@ class _RegisterPageState extends State<RegitserPage> {
                       child: Text(
                         'Sign In',
                         style: GoogleFonts.inter(
-                          fontSize: 12,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xffEC6408),
                         ),

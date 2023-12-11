@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
             title: const Text('Error'),
             content: Text(Massge),
             actions: [
-              MyButton(onTap:() => Navigator.pop(context), text: 'OK')
+              MyButton(onTap: () => Navigator.pop(context), text: 'OK')
             ],
           );
         });
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         'Sign Up',
                         style: GoogleFonts.inter(
-                            fontSize: 12,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: const Color(0xffEC6408)),
                       ),

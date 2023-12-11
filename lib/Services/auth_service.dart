@@ -30,7 +30,7 @@ class AuthService {
       );
 
       // Show loading circle before asynchronous operation
-      showLoadingCircle(context);
+      _showLoadingCircle(context);
 
       // Simulate an asynchronous operation
       await Future.delayed(const Duration(seconds: 1));
@@ -85,7 +85,7 @@ class AuthService {
             FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
         // Show loading circle
-        showLoadingCircle(context);
+        _showLoadingCircle(context);
 
         // Sign in to Firebase with the Facebook credential
         await FirebaseAuth.instance
@@ -140,99 +140,56 @@ class AuthService {
 // Sign-out method
 Future<void> signOutFromFirebase(BuildContext context) async {
   try {
-    // Show the sign-out confirmation dialog
     await showSignOutConfirmationDialog(context);
-
-    // Show loading circle (assuming that the sign-out process is asynchronous)
-    showLoadingCircle(context);
-
-    // Sign out from Firebase (assuming that the sign-out process is asynchronous)
     await FirebaseAuth.instance.signOut();
-
-    // Navigate to the login screen
     Navigator.pushReplacementNamed(context, '/login');
   } catch (e) {
-    // Show a more user-friendly error message
     String errorMessage = "Failed to sign out from Firebase.";
     if (e is FirebaseAuthException) {
       errorMessage = e.message ?? errorMessage;
     }
-
-    // Show an error message
     showErrorMessage(context, errorMessage);
-  } finally {
-    // Pop the loading circle
-    Navigator.pop(context);
   }
 }
 
 // Display sign-out confirmation dialog
 Future<void> showSignOutConfirmationDialog(BuildContext context) async {
-  Completer<void> completer = Completer<void>();
-
-  showDialog(
+  await showDialog(
     context: context,
-    builder: (BuildContext dialogContext) {
-      return AlertDialog(
-        title: const Text('Sign Out Confirmation'),
-        content: const Text('Are you sure you want to sign out?'),
-        actions: <Widget>[
-          Center(
-            child: TextButton(
-              onPressed: () {
-                // User confirmed sign out
-                Navigator.of(dialogContext).pop();
-                completer
-                    .complete(); // Complete the Future when the dialog is dismissed
-              },
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                decoration: const BoxDecoration(
-                  color: Color(0xffEC6408),
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sign Out',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      color: Colors.black,
-                      Icons.arrow_forward,
-                      size: 18,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    builder: (BuildContext dialogContext) => AlertDialog(
+      title: const Text('Sign Out Confirmation'),
+      content: const Text('Are you sure you want to sign out?'),
+      actions: <Widget>[
+        Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: _buildSignOutButton(),
           ),
-        ],
-      );
-    },
+        ),
+      ],
+    ),
   );
-
-  return completer.future; // Return the Future to await its completion
 }
 
-// Display loading circle
-void showLoadingCircle(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Color(0xffEC6408),
-        ),
-      );
-    },
-    barrierDismissible:
-        false, // Prevent users from dismissing the dialog by tapping outside
+// Build the sign-out button widget
+Widget _buildSignOutButton() {
+  return Container(
+    padding: const EdgeInsets.all(20),
+    margin: const EdgeInsets.symmetric(horizontal: 20.0),
+    decoration: const BoxDecoration(
+      color: Color(0xffEC6408),
+      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+    ),
+    child: const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Sign Out', style: TextStyle(color: Colors.black)),
+        SizedBox(width: 5),
+        Icon(Icons.arrow_forward, color: Colors.black, size: 18),
+      ],
+    ),
   );
 }
 
@@ -240,12 +197,21 @@ void showLoadingCircle(BuildContext context) {
 void showErrorMessage(BuildContext context, String message) {
   showDialog(
     context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        actions: [MyButton(onTap: () => Navigator.pop(context), text: 'OK')],
-      );
-    },
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(message),
+      actions: [MyButton(onTap: () => Navigator.pop(context), text: 'OK')],
+    ),
+  );
+}
+
+// Display loading circle
+void _showLoadingCircle(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => const Center(
+      child: CircularProgressIndicator(color: Color(0xffEC6408)),
+    ),
+    barrierDismissible: false,
   );
 }
