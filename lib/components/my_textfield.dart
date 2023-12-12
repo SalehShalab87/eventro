@@ -31,9 +31,8 @@ class MyNmaeTextField extends StatelessWidget {
         cursorColor: const Color(0xffEC6408),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(color:Colors.black54),
+          hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
-          
         ),
       ),
     );
@@ -73,7 +72,7 @@ class MyEmailTextField extends StatelessWidget {
         obscureText: obscuretext,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(color:Colors.black54),
+          hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
       ),
@@ -152,7 +151,7 @@ class MyConfirmPasswordTextField extends StatelessWidget {
         obscureText: obscuretext,
         decoration: InputDecoration(
           hintText: hinttext,
-          hintStyle: const TextStyle(color:Colors.black54),
+          hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
       ),
@@ -160,4 +159,47 @@ class MyConfirmPasswordTextField extends StatelessWidget {
   }
 }
 
+//sarch text field textfield
+class MySearchTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final bool obscureText;
 
+  const MySearchTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.obscureText = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        cursorColor: const Color(0xffEC6408),
+        decoration: InputDecoration(
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Icon(Icons.tune),
+          ),
+          prefixIcon: const Padding(
+            padding: EdgeInsets.only(right: 20),
+            child: Icon(Icons.search),
+          ),
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.black54),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}

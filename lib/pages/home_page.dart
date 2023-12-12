@@ -1,7 +1,12 @@
+import 'package:eventro/components/event_deatails.dart';
+import 'package:eventro/components/event_tile.dart';
+import 'package:eventro/components/my_textfield.dart';
+import 'package:eventro/components/nav_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
+import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/favorite_page.dart';
 import 'package:eventro/pages/profile_page.dart';
-import 'package:flutter/material.dart';
 import 'package:eventro/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,6 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // search text controller
+  final searchController = TextEditingController();
   late User? _user; // User object to store the current user
 
   @override
@@ -27,30 +34,38 @@ class _HomePageState extends State<HomePage> {
     signOutFromFirebase(context);
   }
 
-  // navigate to the user profile
+  // Navigate to the user profile
   void goToUserProfile() {
-    //pop the drawer
+    // Pop the drawer
     Navigator.pop(context);
-    //go to profile page
+    // Go to profile page
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ProfilePage()),
     );
   }
 
-  //navigate to the favorite page
+  // Navigate to the favorite page
   void goToFavoritePage() {
-    //pop the drawer
+    // Pop the drawer
     Navigator.pop(context);
-    //go to profile page
+    // Go to favorite page
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const FavoritePage()),
     );
   }
 
-  // Dummy data for events (replace this with your actual data)
-  List<String> events = ['Event 1', 'Event 2', 'Event 3'];
+  // Navigate to the notification page
+  void goToNotificationPage() {
+    // Pop the drawer
+    Navigator.pop(context);
+    // Go to notification page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NotificationPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,31 +76,66 @@ class _HomePageState extends State<HomePage> {
         onFavoriteTap: goToFavoritePage,
       ),
       appBar: AppBar(
+        elevation: 0.0,
         actions: [
           if (_user != null)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'Hi, ${_user!.displayName ?? ''}',
-                style: const TextStyle(fontFamily: 'Gilroy', fontSize: 18),
-              ),
+            Text(
+              'Hi, ${_user!.displayName ?? ''}',
+              style: const TextStyle(fontFamily: 'Gilroy', fontSize: 18),
             ),
+          IconButton(
+            onPressed: goToNotificationPage,
+            icon: const Icon(Icons.notifications_active_outlined),
+          ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: events.length,
-          itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text(events[index]),
-                // Add more details or buttons as needed
-              ),
-            );
-          },
-        ),
+      body: Column(
+        children: [
+          //search bar
+          MySearchTextField(controller: searchController, hintText: 'Search'),
+
+          const SizedBox(
+            height: 15,
+          ),
+
+          //upcoming events
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Upcoming Events',
+                  style: TextStyle(fontSize: 24),
+                ),
+                Text(
+                  'See all',
+                  style: TextStyle(
+                      color: Color(0xffEC6408), fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    Event event = Event(
+                        'Event 1', 'images/slogo.png', 'cool event',
+                        price: 'Free');
+                    return EventTile(
+                      event: event,
+                    );
+                  }))
+          // hot picks
+        ],
       ),
+      bottomNavigationBar: MyNavBar(),
     );
   }
 }

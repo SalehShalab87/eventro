@@ -131,11 +131,14 @@ class _RegisterPageState extends State<RegitserPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
                 // Logo
                 Image.asset(
                   'images/slogo.png',
-                  height: 170,
-                  width: 170,
+                  height: 150,
+                  width: 150,
                 ),
 
                 // Sign Up text

@@ -39,12 +39,15 @@ class _ForgetMyPasswordPageState extends State<ForgetMyPasswordPage> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: EmailController.text.trim());
-               Navigator.pop(context);
+      Navigator.pop(context);
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: const Text('The password link sent! check your email'),
+              content: const Text(
+                'The password link sent! check your email',
+                style: TextStyle(fontFamily: 'Gilroy'),
+              ),
               actions: [
                 MyButton(onTap: () => Navigator.pop(context), text: 'OK')
               ],

@@ -12,10 +12,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Profile Page',
-          style: TextStyle(fontFamily: 'Gilroy'),
-        ),
+        title: const Text('Profile Page'),
       ),
     );
   }

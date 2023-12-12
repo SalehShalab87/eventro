@@ -88,11 +88,18 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 //logo
                 Image.asset(
                   'images/slogo.png',
-                  height: 170,
-                  width: 170,
+                  height: 150,
+                  width: 150,
+                ),
+
+                const SizedBox(
+                  height: 30,
                 ),
 
                 //Sign in text

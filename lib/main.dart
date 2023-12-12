@@ -40,6 +40,8 @@ class Eventro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //them data for the application
+      theme: ThemeData(fontFamily: 'Gilroy'),
       debugShowCheckedModeBanner: false,
       // Set the initial route based on whether the user has seen the onboarding screen
       initialRoute: initScreen == 0 || initScreen == null ? 'onboard' : '/home',
