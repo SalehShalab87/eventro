@@ -1,5 +1,3 @@
-import 'package:eventro/components/event_deatails.dart';
-import 'package:eventro/components/event_tile.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/pages/event_page.dart';
 import 'package:flutter/material.dart';
@@ -132,18 +130,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(
             height: 10,
           ),
-          Expanded(
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    Event event = Event(
-                        'Event 1', 'images/slogo.png', 'cool event',
-                        price: 'Free');
-                    return EventTile(
-                      event: event,
-                    );
-                  }))
+
           // hot picks
         ],
       ),
