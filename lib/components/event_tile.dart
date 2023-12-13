@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:eventro/components/event_deatails.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +9,7 @@ class EventTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 25),
+      margin: const EdgeInsets.only(left: 25),
       width: 280,
       decoration: BoxDecoration(
         color: Colors.grey[100],

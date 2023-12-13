@@ -1,5 +1,5 @@
-import 'package:eventro/pages/home_page.dart';
 import 'package:eventro/pages/login_page.dart';
+import 'package:eventro/pages/main_Page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,11 +16,11 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           //is the user loged in
           if (snapshot.hasData) {
-            return const HomePage();
+            return const MainPage();
           }
 
           //is the user not loged in
-          else{
+          else {
             return const LoginPage();
           }
         },

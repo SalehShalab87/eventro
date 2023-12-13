@@ -6,12 +6,14 @@ class MyDrawer extends StatefulWidget {
   final Function()? onProfileTap;
   final Function()? onSignOutTap;
   final Function()? onFavoriteTap;
+  final Function()? onEventsTap;
 
   const MyDrawer({
     super.key,
     required this.onProfileTap,
     required this.onSignOutTap,
     required this.onFavoriteTap,
+    required this.onEventsTap,
   });
 
   @override
@@ -60,12 +62,17 @@ class _MyDrawerState extends State<MyDrawer> {
                 text: 'F A V O R I T E',
                 onTap: widget.onFavoriteTap,
               ),
+              MyListTile(
+                icon: Icons.event,
+                text: 'E V E N T S',
+                onTap: widget.onEventsTap,
+              ),
             ],
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
             child: MyListTile(
-              icon: Icons.logout,
+              icon: Icons.logout_outlined,
               text: 'L O G O U T',
               onTap: widget.onSignOutTap,
             ),

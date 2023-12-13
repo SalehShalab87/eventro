@@ -1,7 +1,7 @@
 import 'package:eventro/components/event_deatails.dart';
 import 'package:eventro/components/event_tile.dart';
 import 'package:eventro/components/my_textfield.dart';
-import 'package:eventro/components/nav_bar.dart';
+import 'package:eventro/pages/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';
@@ -67,13 +67,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //navigate to the events Page
+  goToEventsPage() {
+    // Pop the drawer
+    Navigator.pop(context);
+    // Go to notification page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EventsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MyDrawer(
         onProfileTap: goToUserProfile,
-        onSignOutTap: () => _signOut(context),
         onFavoriteTap: goToFavoritePage,
+        onEventsTap: goToEventsPage,
+        onSignOutTap: () => _signOut(context),
       ),
       appBar: AppBar(
         elevation: 0.0,
@@ -135,7 +147,6 @@ class _HomePageState extends State<HomePage> {
           // hot picks
         ],
       ),
-      bottomNavigationBar: MyNavBar(),
     );
   }
 }
