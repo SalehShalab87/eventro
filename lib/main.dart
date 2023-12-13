@@ -1,3 +1,4 @@
+import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/Onboarding_pages.dart';
 import 'package:eventro/pages/auth_page.dart';
@@ -5,6 +6,7 @@ import 'package:eventro/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'Services/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,18 +41,25 @@ class Eventro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      //them data for the application
-      theme: ThemeData(fontFamily: 'Gilroy'),
-      debugShowCheckedModeBanner: false,
-      // Set the initial route based on whether the user has seen the onboarding screen
-      initialRoute: initScreen == 0 || initScreen == null ? 'onboard' : '/home',
-      routes: {
-        '/home': (context) => const AuthPage(),
-        'onboard': (context) => const OnboardingScreen(),
-        '/login': (context) => const LoginPage(),
-        '/notifications': (context) => const NotificationPage(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => Booking(),
+      builder: (context, child) => MaterialApp(
+        //them data for the application
+        theme: ThemeData(
+            fontFamily: 'Gilroy',
+            scaffoldBackgroundColor: Colors.grey[300],
+            appBarTheme: AppBarTheme(backgroundColor: Colors.grey[300])),
+        debugShowCheckedModeBanner: false,
+        // Set the initial route based on whether the user has seen the onboarding screen
+        initialRoute:
+            initScreen == 0 || initScreen == null ? 'onboard' : '/home',
+        routes: {
+          '/home': (context) => const AuthPage(),
+          'onboard': (context) => const OnboardingScreen(),
+          '/login': (context) => const LoginPage(),
+          '/notifications': (context) => const NotificationPage(),
+        },
+      ),
     );
   }
 }

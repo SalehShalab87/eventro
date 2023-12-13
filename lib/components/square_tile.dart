@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class SquareTile extends StatelessWidget {
   final Function()? onTap;
-  const SquareTile({super.key, required this.ImagePath,required this.onTap});
+  const SquareTile({super.key, required this.ImagePath, required this.onTap});
 
   // Image path for icons
 
@@ -21,7 +21,7 @@ class SquareTile extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(color: const Color(0xff9D9898)),
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white),
+            color: Colors.grey[300]),
         child: Image.asset(
           ImagePath,
           height: 40,

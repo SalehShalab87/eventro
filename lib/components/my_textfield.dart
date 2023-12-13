@@ -21,9 +21,9 @@ class MyNmaeTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey),
       ),
       child: TextField(
         controller: controller,
@@ -62,9 +62,9 @@ class MyEmailTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey),
       ),
       child: TextField(
         cursorColor: const Color(0xffEC6408),
@@ -102,9 +102,9 @@ class MyPasswordTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey),
       ),
       child: TextField(
         cursorColor: const Color(0xffEC6408),
@@ -141,9 +141,9 @@ class MyConfirmPasswordTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey),
       ),
       child: TextField(
         cursorColor: const Color(0xffEC6408),
@@ -178,9 +178,9 @@ class MySearchTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.grey),
       ),
       child: TextField(
         controller: controller,

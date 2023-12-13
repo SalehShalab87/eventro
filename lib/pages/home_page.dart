@@ -1,4 +1,8 @@
+import 'package:eventro/components/event_tile.dart';
+import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
+import 'package:eventro/models/booking.dart';
+import 'package:eventro/models/event.dart';
 import 'package:eventro/pages/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
@@ -7,6 +11,7 @@ import 'package:eventro/pages/favorite_page.dart';
 import 'package:eventro/pages/profile_page.dart';
 import 'package:eventro/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -76,63 +81,118 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //add event to favorite
+  void addEventToFavorite(Event event) {
+    Provider.of<Booking>(context, listen: false).addEventToFavorites(event);
+
+    //alert the user that the event go to the favoriet page
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Succefully added!'),
+        content: const Text('Check the favorite page'),
+        actions: [MyButton(onTap: () => Navigator.pop(context), text: 'OK')],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MyDrawer(
-        onProfileTap: goToUserProfile,
-        onFavoriteTap: goToFavoritePage,
-        onEventsTap: goToEventsPage,
-        onSignOutTap: () => _signOut(context),
-      ),
-      appBar: AppBar(
-        elevation: 0.0,
-        actions: [
-          if (_user != null)
-            Text(
-              'Hi, ${_user!.displayName ?? ''}',
-              style: const TextStyle(fontFamily: 'Gilroy', fontSize: 18),
+    return Consumer<Booking>(
+      builder: (context, value, child) => Scaffold(
+        drawer: MyDrawer(
+          onProfileTap: goToUserProfile,
+          onFavoriteTap: goToFavoritePage,
+          onEventsTap: goToEventsPage,
+          onSignOutTap: () => _signOut(context),
+        ),
+        appBar: AppBar(
+          elevation: 0.0,
+          actions: [
+            if (_user != null)
+              Text(
+                'Hi, ${_user!.displayName ?? ''}',
+                style: const TextStyle(fontFamily: 'Gilroy', fontSize: 18),
+              ),
+            IconButton(
+              onPressed: goToNotificationPage,
+              icon: const Icon(Icons.notifications_active_outlined),
             ),
-          IconButton(
-            onPressed: goToNotificationPage,
-            icon: const Icon(Icons.notifications_active_outlined),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          //search bar
-          MySearchTextField(controller: searchController, hintText: 'Search'),
+          ],
+        ),
+        body: Column(
+          children: [
+            //search bar
+            MySearchTextField(controller: searchController, hintText: 'Search'),
 
-          const SizedBox(
-            height: 15,
-          ),
-
-          //upcoming events
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'Upcoming Events',
-                  style: TextStyle(fontSize: 24),
-                ),
-                Text(
-                  'See all',
-                  style: TextStyle(
-                      color: Color(0xffEC6408), fontWeight: FontWeight.bold),
-                ),
-              ],
+            const SizedBox(
+              height: 15,
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
 
-          // hot picks
-        ],
+            //upcoming events
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(right: 50),
+                    child: Text(
+                      'Upcoming Events',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
+                  GestureDetector(
+                    child: const Text(
+                      'See all',
+                      style: TextStyle(
+                          color: Color(0xffEC6408),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const EventsPage();
+                    })),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    color: Color(0xffEC4608),
+                    size: 12,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            // Horizontal list view for upcoming event
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 3,
+                itemBuilder: (BuildContext context, int index) {
+                  //get event from event list to book
+                  Event event = value.getUserEventToBook()[index];
+
+                  //return the events to book
+
+                  return EventTile(
+                    onTap: () => addEventToFavorite(event),
+                    event: event,
+                  );
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 100, left: 100, right: 100),
+              child: Divider(
+                color: Colors.white,
+              ),
+            )
+            // hot picks
+          ],
+        ),
       ),
     );
   }
