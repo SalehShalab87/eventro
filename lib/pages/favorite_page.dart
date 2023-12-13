@@ -1,4 +1,4 @@
-import 'package:eventro/components/favorite_event.dart';
+import 'package:eventro/components/favorite_tile.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class FavoritePage extends StatelessWidget {
                   centerTitle: true,
                   title: const Text(
                     'My Favorites',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   )),
               //list view for the favorites
               body: Padding(

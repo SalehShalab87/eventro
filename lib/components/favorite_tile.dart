@@ -24,7 +24,7 @@ class _FavoriteEventsState extends State<FavoriteEvents> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
+          color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
           leading: Image.asset(widget.event.imageUrl),

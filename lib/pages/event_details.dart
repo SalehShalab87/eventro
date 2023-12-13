@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class EventDetails extends StatefulWidget {
+  const EventDetails({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<EventDetails> createState() => _EventDetailsState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My Profile',
+          'Event details',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

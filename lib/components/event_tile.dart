@@ -16,7 +16,7 @@ class EventTile extends StatelessWidget {
         margin: const EdgeInsets.only(left: 25),
         width: 280,
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.grey[200],
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
