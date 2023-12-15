@@ -1,15 +1,15 @@
 class Event {
-  final String id;
+  final String eventId;
   final String imageUrl;
   //final String location;
   final String title;
-  //final String date;
-  //final String time;
   final String price;
   final String description;
+  //final String date;
+  //final String time;
 
   Event({
-    required this.id,
+    required this.eventId,
     required this.imageUrl,
     //required this.location,
     required this.title,

@@ -21,7 +21,7 @@ class _EventListBuilderState extends State<EventListBuilder> {
     // Check if the event is already in favorites based on the unique id
     bool isAlreadyInFavorites = booking
         .getUseFavoriteEvents()
-        .any((favEvent) => favEvent.id == event.id);
+        .any((favEvent) => favEvent.eventId == event.eventId);
 
     if (!isAlreadyInFavorites) {
       // If not, add it to favorites

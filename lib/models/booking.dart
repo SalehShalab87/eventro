@@ -21,7 +21,7 @@ class Booking extends ChangeNotifier {
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         Event event = Event(
-          id: doc.id,
+          eventId: doc.id,
           imageUrl: data['imageUrl'] ?? '',
           title: data['title'] ?? '',
           price: data['price'] ?? '',
