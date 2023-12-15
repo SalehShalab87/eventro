@@ -9,39 +9,42 @@ class FavoritePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Consumer widget to listen to changes in the Booking model
     return Consumer<Booking>(
-        builder: (context, value, child) => Scaffold(
-              appBar: AppBar(
-                  centerTitle: true,
-                  title: const Text(
-                    'My Favorites',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  )),
-              //list view for the favorites
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: value.getUseFavoriteEvents().length,
-                        itemBuilder: (BuildContext context, int index) {
-                          // get invidual event
-                          Event individualEvent =
-                              value.getUseFavoriteEvents()[index];
-                          //return the favorite event
-                          return FavoriteEvents(
-                            event: individualEvent,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+      builder: (context, value, child) => Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'My Favorites',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        // Body of the Favorite Page
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              // Expanded ListView to display favorite events
+              Expanded(
+                child: ListView.builder(
+                  itemCount: value.getUseFavoriteEvents().length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // Get individual event from the list of favorites
+                    Event individualEvent = value.getUseFavoriteEvents()[index];
+                    // Return the FavoriteEvents widget for each event
+                    return FavoriteEvents(
+                      event: individualEvent,
+                    );
+                  },
                 ),
               ),
-            ));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

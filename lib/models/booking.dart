@@ -1,46 +1,65 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Booking extends ChangeNotifier {
-  //list for the event to book
-  List<Event> eventToBook = [
-    Event(
-        imageUrl: 'images/football.png',
-        title: 'Football Event',
-        price: 'Free',
-        description: 'Cool Fotball Event'),
-    Event(
-        imageUrl: 'images/music.png',
-        title: 'Music Event',
-        price: 'Free',
-        description: 'Cool Music Event'),
-    Event(
-        imageUrl: 'images/cycles.png',
-        title: 'Cycles Event',
-        price: 'Free',
-        description: 'Cool Cycles Event'),
-  ];
+  // Create an object for the firestore
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  //list for the user favorite
-  List<Event> userFavorite = [];
+  // Collection for the events
+  CollectionReference events =
+      FirebaseFirestore.instance.collection('eventsCollection');
 
-  //get list of event to book
-  List<Event> getUserEventToBook() {
-    return eventToBook;
+  // Replace the hardcoded list with a method to fetch events from Firestore
+  Future<List<Event>> getEventsToBook(BuildContext context) async {
+    try {
+      eventsToBook.clear(); // Clear the list before fetching new data
+      QuerySnapshot querySnapshot = await events.get();
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        Event event = Event(
+          id: doc.id,
+          imageUrl: data['imageUrl'] ?? '',
+          title: data['title'] ?? '',
+          price: data['price'] ?? '',
+          description: data['description'] ?? '',
+        );
+        eventsToBook.add(event);
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text('An error occurred while fetching events.'),
+          actions: [
+            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
+          ],
+        ),
+      );
+    }
+    return eventsToBook;
   }
 
-  //get user favorite events
+  // List for the user favorite
+  List<Event> userFavorite = [];
+  List<Event> eventsToBook = [];
+
+  // Get user favorite events
   List<Event> getUseFavoriteEvents() {
     return userFavorite;
   }
 
-  //add to favorite events
+  // Add to favorite events
   void addEventToFavorites(Event event) {
     userFavorite.add(event);
     notifyListeners();
   }
 
-  // remove favorite events
+  // Remove favorite events
   void deleteEventFromFavorites(Event event) {
     userFavorite.remove(event);
     notifyListeners();

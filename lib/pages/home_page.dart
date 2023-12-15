@@ -1,9 +1,7 @@
-import 'package:eventro/components/event_tile.dart';
-import 'package:eventro/components/my_button.dart';
+import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/models/booking.dart';
-import 'package:eventro/models/event.dart';
-import 'package:eventro/pages/event_details.dart';
+import 'package:eventro/pages/create_event_page.dart';
 import 'package:eventro/pages/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
@@ -15,16 +13,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // search text controller
+  // Controller for search text field
   final searchController = TextEditingController();
-  late User? _user; // User object to store the current user
+  // User object to store the current user
+  late User? _user;
 
   @override
   void initState() {
@@ -33,13 +32,13 @@ class _HomePageState extends State<HomePage> {
     _user = FirebaseAuth.instance.currentUser;
   }
 
-  // Sign User Out Method
+  // Method to sign out the user
   void _signOut(BuildContext context) {
     signOutFromFirebase(context);
   }
 
-  // Navigate to the user profile
-  void goToUserProfile() {
+  // Method to navigate to the user profile page
+  void _goToUserProfile() {
     // Pop the drawer
     Navigator.pop(context);
     // Go to profile page
@@ -49,8 +48,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Navigate to the favorite page
-  void goToFavoritePage() {
+  // Method to navigate to the favorite page
+  void _goToFavoritePage() {
     // Pop the drawer
     Navigator.pop(context);
     // Go to favorite page
@@ -60,8 +59,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Navigate to the notification page
-  void goToNotificationPage() {
+  // Method to navigate to the notification page
+  void _goToNotificationPage() {
     // Pop the drawer
     Navigator.pop(context);
     // Go to notification page
@@ -71,8 +70,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //navigate to the events Page
-  goToEventsPage() {
+  // Method to navigate to the events page
+  void _goToEventsPage() {
     // Pop the drawer
     Navigator.pop(context);
     // Go to notification page
@@ -82,94 +81,104 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //add event to favorite
-  void addEventToFavorite(Event event) {
-    Provider.of<Booking>(context, listen: false).addEventToFavorites(event);
+  // Method to handle the "Create Event" button press
+  void _onCreateEventPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CreateEventPage()),
+    );
+  }
 
-    //alert the user that the event go to the favoriet page
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Successfully added!'),
-        content: const Text('Check the favorite page'),
-        actions: [
-          MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-        ],
+  // Method to build the actions for the AppBar
+  List<Widget> _buildAppBarActions() {
+    final actions = <Widget>[];
+    // Display user greeting if user is logged in
+    if (_user != null) {
+      actions.add(
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Text(
+            'Hi, ${_user!.displayName ?? ''}',
+            style: const TextStyle(
+              fontFamily: 'Gilroy',
+              fontSize: 18,
+            ),
+          ),
+        ),
+      );
+    }
+    // Notification icon
+    actions.add(
+      GestureDetector(
+        onTap: _goToNotificationPage,
+        child: const Padding(
+          padding: EdgeInsets.only(right: 15),
+          child: Icon(
+            Icons.notifications_active_outlined,
+          ),
+        ),
       ),
     );
+    return actions;
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Booking>(
       builder: (context, value, child) => Scaffold(
+        // Floating action button for creating events
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xffEC6408),
+          onPressed: _onCreateEventPressed,
+          child: const Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+        ),
+        // Drawer for navigation options
         drawer: MyDrawer(
-          onProfileTap: goToUserProfile,
-          onFavoriteTap: goToFavoritePage,
-          onEventsTap: goToEventsPage,
+          onProfileTap: _goToUserProfile,
+          onFavoriteTap: _goToFavoritePage,
+          onEventsTap: _goToEventsPage,
           onSignOutTap: () => _signOut(context),
         ),
+        // AppBar at the top of the screen
         appBar: AppBar(
           elevation: 0.0,
-          actions: [
-            if (_user != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Text(
-                  'Hi, ${_user!.displayName ?? ''}',
-                  style: const TextStyle(
-                    fontFamily: 'Gilroy',
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            GestureDetector(
-              onTap: () => goToNotificationPage(),
-              child: const Padding(
-                padding: EdgeInsets.only(right: 15),
-                child: Icon(
-                  Icons.notifications_active_outlined,
-                ),
-              ),
-            ),
-          ],
+          // Actions on the right side of the AppBar
+          actions: _buildAppBarActions(),
         ),
+        // Body of the screen, scrollable column
         body: SingleChildScrollView(
           child: Column(
             children: [
-              //search bar
+              // Search bar
               MySearchTextField(
                 controller: searchController,
                 hintText: 'Search',
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              //upcoming events
+              const SizedBox(height: 15),
+              // Upcoming events section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(right: 50),
+                      padding: EdgeInsets.only(right: 75),
                       child: Text(
-                        'Upcoming Events',
+                        'Events For You',
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
                     GestureDetector(
+                      onTap: _goToEventsPage,
                       child: const Text(
                         'See all',
                         style: TextStyle(
                             color: Color(0xffEC6408),
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
-                      ),
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EventsPage()),
                       ),
                     ),
                     const Icon(
@@ -180,42 +189,17 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
+              // Horizontal list view for upcoming events
               const SizedBox(
-                height: 10,
-              ),
-              // Horizontal list view for upcoming event
-              SizedBox(
-                height:
-                    370, // Set a fixed height or use another appropriate value
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (BuildContext context, int index) {
-                    //get event from event list to book
-                    Event event = value.getUserEventToBook()[index];
-
-                    //return the events to book
-                    return GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EventDetails()),
-                      ),
-                      child: EventTile(
-                        onTap: () => addEventToFavorite(event),
-                        event: event,
-                      ),
-                    );
-                  },
-                ),
+                height: 360,
+                child: EventListBuilder(),
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 100, left: 100, right: 100),
-                child: Divider(
-                  color: Colors.white,
-                ),
+                child: Divider(color: Colors.white),
               ),
-              // hot picks
+              // Hot picks or additional sections can be added here
             ],
           ),
         ),

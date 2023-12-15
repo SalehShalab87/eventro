@@ -1,4 +1,5 @@
 class Event {
+  final String id;
   final String imageUrl;
   //final String location;
   final String title;
@@ -8,6 +9,7 @@ class Event {
   final String description;
 
   Event({
+    required this.id,
     required this.imageUrl,
     //required this.location,
     required this.title,

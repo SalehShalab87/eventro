@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/Services/auth_service.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
@@ -48,6 +49,9 @@ class _LoginPageState extends State<LoginPage> {
 
       // Check if sign-in is successful
       if (FirebaseAuth.instance.currentUser != null) {
+        // Save user details to Firestore
+        saveUserDetailsToFirestore();
+
         // Navigate to the home screen
         Navigator.pushReplacementNamed(context, '/home');
       } else {
@@ -61,6 +65,36 @@ class _LoginPageState extends State<LoginPage> {
 
       // Show an error message
       ShowErrorMassage(e.message.toString());
+    }
+  }
+
+  void saveUserDetailsToFirestore() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Reference to Firestore
+        final firestore = FirebaseFirestore.instance;
+
+        // Reference to 'users' collection
+        final userCollection = firestore.collection('users');
+
+        // Reference to the document with UID
+        final userDocument = userCollection.doc(user.uid);
+
+        // Check if the document exists
+        final documentSnapshot = await userDocument.get();
+        if (!documentSnapshot.exists) {
+          // Create the document with UID
+          await userDocument.set({
+            'email': user.email,
+            'displayName': user.displayName,
+            'photoURL': user.photoURL,
+            // Add more user details as needed
+          });
+        }
+      }
+    } catch (e) {
+      showErrorMessage(context, e.toString());
     }
   }
 
