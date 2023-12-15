@@ -1,9 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eventro/Services/auth_service.dart';
+import 'package:eventro/Services/auth/apple_signin.dart';
+import 'package:eventro/Services/auth/facebook_signin.dart';
+import 'package:eventro/Services/auth/google_signin.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
+import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/components/square_tile.dart';
 import 'package:eventro/pages/forget_password_page.dart';
 import 'package:eventro/pages/register_page.dart';
@@ -243,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     //google button
                     SquareTile(
-                        onTap: () => AuthService().signInWithGoogle(context),
+                        onTap: () => GoogleServices().signInWithGoogle(context),
                         ImagePath: 'images/google.png'),
 
                     const SizedBox(
@@ -251,7 +254,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     //apple button
-                    SquareTile(onTap: () => {}, ImagePath: 'images/apple.png'),
+                    SquareTile(
+                        onTap: () => AppleServices().signInWithApple,
+                        ImagePath: 'images/apple.png'),
 
                     const SizedBox(
                       width: 10,
@@ -259,7 +264,8 @@ class _LoginPageState extends State<LoginPage> {
 
                     //facebook logo
                     SquareTile(
-                        onTap: () => AuthService().signInWithFacebook(context),
+                        onTap: () =>
+                            FacebookServices().signInWithFacebook(context),
                         ImagePath: 'images/facebook.png')
                   ],
                 ),

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
-import 'package:eventro/Services/auth_service.dart';
+import 'package:eventro/Services/auth/facebook_signin.dart';
+import 'package:eventro/Services/auth/google_signin.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/components/square_tile.dart';
@@ -237,7 +238,7 @@ class _RegisterPageState extends State<RegitserPage> {
                   children: [
                     // Google button
                     SquareTile(
-                      onTap: () => AuthService().signInWithGoogle(context),
+                      onTap: () => GoogleServices().signInWithGoogle(context),
                       ImagePath: 'images/google.png',
                     ),
 
@@ -254,7 +255,8 @@ class _RegisterPageState extends State<RegitserPage> {
 
                     // Facebook logo
                     SquareTile(
-                      onTap: () => AuthService().signInWithFacebook(context),
+                      onTap: () =>
+                          FacebookServices().signInWithFacebook(context),
                       ImagePath: 'images/facebook.png',
                     )
                   ],
