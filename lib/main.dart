@@ -1,13 +1,13 @@
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/Onboarding_pages.dart';
-import 'package:eventro/pages/auth_page.dart';
-import 'package:eventro/pages/login_page.dart';
+import 'package:eventro/pages/authpages/auth_page.dart';
+import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'Services/firebase_options.dart';
+import 'firebase/firebase_options2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 int? initScreen;

@@ -1,5 +1,5 @@
-import 'package:eventro/pages/login_page.dart';
-import 'package:eventro/pages/main_Page.dart';
+import 'package:eventro/pages/authpages/login_page.dart';
+import 'package:eventro/pages/main/main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:eventro/pages/main_page.dart';
+import 'package:eventro/pages/main/main_page.dart';
 import 'package:flutter/material.dart';
 
 class EventsPage extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:eventro/pages/event_details.dart';
+import 'package:eventro/pages/event/event_details.dart';
 
 class EventListBuilder extends StatefulWidget {
   const EventListBuilder({super.key});

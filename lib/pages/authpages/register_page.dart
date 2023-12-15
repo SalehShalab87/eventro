@@ -5,7 +5,7 @@ import 'package:eventro/Services/auth/google_signin.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/components/square_tile.dart';
-import 'package:eventro/pages/login_page.dart';
+import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

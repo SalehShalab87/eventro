@@ -1,5 +1,5 @@
 // ignore_for_file: file_names
-import 'package:eventro/pages/main_page.dart';
+import 'package:eventro/pages/main/main_page.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPage extends StatefulWidget {

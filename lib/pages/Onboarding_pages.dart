@@ -1,9 +1,9 @@
 // ignore_for_file: file_names, non_constant_identifier_names
 
-import 'package:eventro/components/screens/onboard1.dart';
-import 'package:eventro/components/screens/onboard2.dart';
-import 'package:eventro/components/screens/onboard3.dart';
-import 'package:eventro/pages/login_page.dart';
+import 'package:eventro/screens/onboard1.dart';
+import 'package:eventro/screens/onboard2.dart';
+import 'package:eventro/screens/onboard3.dart';
+import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

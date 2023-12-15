@@ -1,12 +1,12 @@
 import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/models/booking.dart';
-import 'package:eventro/pages/create_event_page.dart';
-import 'package:eventro/pages/event_page.dart';
+import 'package:eventro/pages/event/create_event_page.dart';
+import 'package:eventro/pages/event/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';
-import 'package:eventro/pages/favorite_page.dart';
+import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/profile_page.dart';
 import 'package:eventro/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
