@@ -1,3 +1,4 @@
+import 'package:eventro/Services/auth/sign_out.dart';
 import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/models/booking.dart';
@@ -8,7 +9,6 @@ import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/profile_page.dart';
-import 'package:eventro/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
