@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+
 import 'package:eventro/components/event_tile.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
@@ -17,6 +18,7 @@ class _EventListBuilderState extends State<EventListBuilder> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Event>>(
+      // FutureBuilder widget to asynchronously fetch and display events
       future: Provider.of<Booking>(context).getEventsToBook(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -36,6 +38,7 @@ class _EventListBuilderState extends State<EventListBuilder> {
             itemBuilder: (BuildContext context, int index) {
               Event event = events[index];
               return GestureDetector(
+                // Navigate to the EventDetails page when an event is tapped
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -45,6 +48,7 @@ class _EventListBuilderState extends State<EventListBuilder> {
                   ),
                 ),
                 child: EventTile(
+                  // Add event to favorites when the tile is tapped
                   onTap: () => context
                       .read<Booking>()
                       .addEventToFavorite(context, event),

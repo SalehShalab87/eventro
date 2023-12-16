@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:eventro/Services/auth/sign_out.dart';
 import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';

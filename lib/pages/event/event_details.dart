@@ -4,6 +4,7 @@ import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EventDetails extends StatefulWidget {
   final String eventId;
@@ -16,7 +17,6 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
   Event? event; // Use nullable Event to represent that it might be null
-
   @override
   void initState() {
     super.initState();
@@ -99,8 +99,18 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // Display date
                   Text(
-                    'Time: ${event!.dateTime}',
+                    'Date: ${DateFormat('yyyy-MM-dd').format(event!.dateTime!)}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Display time
+                  Text(
+                    'Time: ${DateFormat('HH:mm:ss').format(event!.dateTime!)}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
