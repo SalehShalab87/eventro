@@ -1,5 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:eventro/components/event_tile.dart';
-import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
@@ -14,45 +14,6 @@ class EventListBuilder extends StatefulWidget {
 }
 
 class _EventListBuilderState extends State<EventListBuilder> {
-// Add event to favorites with improved duplicate check using unique id
-  void addEventToFavorite(Event event) {
-    Booking booking = Provider.of<Booking>(context, listen: false);
-
-    // Check if the event is already in favorites based on the unique id
-    bool isAlreadyInFavorites = booking
-        .getUseFavoriteEvents()
-        .any((favEvent) => favEvent.eventId == event.eventId);
-
-    if (!isAlreadyInFavorites) {
-      // If not, add it to favorites
-      booking.addEventToFavorites(event);
-
-      // Alert the user that the event has been added to the favorites page
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Successfully added!'),
-          content: const Text('Check the favorite page'),
-          actions: [
-            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-          ],
-        ),
-      );
-    } else {
-      // If the event is already in favorites, show a warning
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Event already added!'),
-          content: const Text('This event is already in your favorites.'),
-          actions: [
-            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-          ],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Event>>(
@@ -82,7 +43,9 @@ class _EventListBuilderState extends State<EventListBuilder> {
                   ),
                 ),
                 child: EventTile(
-                  onTap: () => addEventToFavorite(event),
+                  onTap: () => context
+                      .read<Booking>()
+                      .addEventToFavorite(context, event),
                   event: event,
                 ),
               );

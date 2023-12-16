@@ -30,10 +30,11 @@ class FavoritePage extends StatelessWidget {
               // Expanded ListView to display favorite events
               Expanded(
                 child: ListView.builder(
-                  itemCount: value.getUseFavoriteEvents().length,
+                  itemCount: value.getUserFavoriteEvents().length,
                   itemBuilder: (BuildContext context, int index) {
                     // Get individual event from the list of favorites
-                    Event individualEvent = value.getUseFavoriteEvents()[index];
+                    Event individualEvent =
+                        value.getUserFavoriteEvents()[index];
                     // Return the FavoriteEvents widget for each event
                     return FavoriteEvents(
                       event: individualEvent,

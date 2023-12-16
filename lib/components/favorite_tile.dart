@@ -12,27 +12,61 @@ class FavoriteEvents extends StatefulWidget {
   @override
   State<FavoriteEvents> createState() => _FavoriteEventsState();
 }
+
 //remove event from favorites
 
 class _FavoriteEventsState extends State<FavoriteEvents> {
-  removefromfav() {
+  removefromfav(BuildContext context) {
     Provider.of<Booking>((context), listen: false)
-        .deleteEventFromFavorites(widget.event);
+        .deleteEventFromFavorites(context, widget.event);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-          leading: Image.asset(widget.event.imageUrl),
-          title: Text(widget.event.title),
-          subtitle: Text(widget.event.price),
-          trailing: IconButton(
-              onPressed: () => removefromfav(),
-              icon: const Icon(Icons.delete_outline_rounded))),
+    return InkWell(
+      onTap: () {
+        // Handle onTap actions if needed
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(8),
+            tileColor: Colors.grey[200],
+            leading: Image.asset(
+              widget.event.imageUrl,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+            title: Text(
+              widget.event.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(widget.event.price),
+            trailing: Container(
+              padding: const EdgeInsets.all(5),
+              decoration: const BoxDecoration(
+                  color: Color(0xffEC6408),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12))),
+              child: IconButton(
+                onPressed: () => removefromfav(context),
+                icon: const Icon(
+                  Icons.delete_outline_rounded,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

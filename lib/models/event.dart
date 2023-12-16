@@ -18,4 +18,14 @@ class Event {
     required this.price,
     required this.description,
   });
+  Map<String, dynamic> toMap() {
+    return {
+      'eventId': eventId,
+      'imageUrl': imageUrl,
+      'title': title,
+      'price': price,
+      'description': description,
+      // Add other attributes as needed
+    };
+  }
 }

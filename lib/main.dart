@@ -42,7 +42,11 @@ class Eventro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => Booking(),
+      create: (context) {
+        Booking booking = Booking();
+        booking.init(context);
+        return booking;
+      },
       builder: (context, child) => MaterialApp(
         //them data for the application
         theme: ThemeData(
