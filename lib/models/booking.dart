@@ -24,7 +24,10 @@ class Booking extends ChangeNotifier {
         Event event = Event(
           eventId: doc.id,
           imageUrl: data['imageUrl'] ?? '',
+          location: data['location'] ?? '',
           title: data['title'] ?? '',
+          dateTime: (data['datetime'] as Timestamp?)
+              ?.toDate(), // Convert Timestamp to DateTime
           price: data['price'] ?? '',
           description: data['description'] ?? '',
         );
@@ -71,7 +74,10 @@ class Booking extends ChangeNotifier {
           Event event = Event(
             eventId: doc.id,
             imageUrl: data['imageUrl'] ?? '',
+            location: data['location'] ?? '',
             title: data['title'] ?? '',
+            dateTime: (data['datetime'] as Timestamp?)
+                ?.toDate(), // Convert Timestamp to DateTime
             price: data['price'] ?? '',
             description: data['description'] ?? '',
           );
@@ -152,6 +158,52 @@ class Booking extends ChangeNotifier {
           ],
         ),
       );
+    }
+  }
+
+  // Fetch event details based on eventId
+  Future<Event?> getEventDetails(BuildContext context, String eventId) async {
+    try {
+      // Reference to the event document in Firestore
+      DocumentSnapshot eventSnapshot = await events.doc(eventId).get();
+
+      // Check if the document exists
+      if (eventSnapshot.exists) {
+        // Extract data from the document
+        Map<String, dynamic> eventData =
+            eventSnapshot.data() as Map<String, dynamic>;
+
+        // Create an Event object with the extracted data
+        Event event = Event(
+          eventId: eventId,
+          imageUrl: eventData['imageUrl'] ?? '',
+          location: eventData['location'] ?? '',
+          title: eventData['title'] ?? '',
+          dateTime: (eventData['datetime'] as Timestamp?)
+              ?.toDate(), // Convert Timestamp to DateTime
+          price: eventData['price'] ?? '',
+          description: eventData['description'] ?? '',
+        );
+
+        return event;
+      } else {
+        // Return null if the document doesn't exist
+        return null;
+      }
+    } catch (e) {
+      // Handle any errors that may occur during the fetch
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text(
+              'An error occurred while adding the event to favorites.'),
+          actions: [
+            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
+          ],
+        ),
+      );
+      return null;
     }
   }
 

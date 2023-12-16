@@ -39,7 +39,9 @@ class _EventListBuilderState extends State<EventListBuilder> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const EventDetails(),
+                    builder: (context) => EventDetails(
+                      eventId: event.eventId,
+                    ),
                   ),
                 ),
                 child: EventTile(

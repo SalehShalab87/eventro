@@ -1,20 +1,18 @@
 class Event {
   final String eventId;
   final String imageUrl;
-  //final String location;
+  final String location;
   final String title;
   final String price;
   final String description;
-  //final String date;
-  //final String time;
+  final DateTime? dateTime;
 
   Event({
     required this.eventId,
     required this.imageUrl,
-    //required this.location,
+    required this.location,
     required this.title,
-    //required this.date,
-    //required this.time,
+    required this.dateTime,
     required this.price,
     required this.description,
   });
@@ -25,7 +23,8 @@ class Event {
       'title': title,
       'price': price,
       'description': description,
-      // Add other attributes as needed
+      'location': location,
+      'dateTime': dateTime,
     };
   }
 }
