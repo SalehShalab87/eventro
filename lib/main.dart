@@ -52,7 +52,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // Initialize Firebase Storage
-  await firebase_storage.FirebaseStorage.instance;
+  firebase_storage.FirebaseStorage.instance;
 
   runApp(
     MultiProvider(

@@ -9,6 +9,7 @@ import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Register page code
 class RegitserPage extends StatefulWidget {
@@ -57,6 +58,9 @@ class _RegisterPageState extends State<RegitserPage> {
           password: _passwordController.text.trim(),
         );
 
+        // Upload user information to Cloud Firestore
+        await uploadUserDataToFirestore();
+
         // Set the display name for the newly created user
         await FirebaseAuth.instance.currentUser
             ?.updateDisplayName(_nameController.text.trim());
@@ -92,7 +96,7 @@ class _RegisterPageState extends State<RegitserPage> {
         _confirmedPasswordController.text.trim();
   }
 
-  // Show Wrong Email method
+  // Show error message method
   void ShowErrorMassage(String message) {
     showDialog(
       context: context,
@@ -121,6 +125,20 @@ class _RegisterPageState extends State<RegitserPage> {
         );
       },
     );
+  }
+
+  // Upload user information to Cloud Firestore
+  Future<void> uploadUserDataToFirestore() async {
+    String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    String email = FirebaseAuth.instance.currentUser?.email ?? '';
+
+    // Add user data to Firestore
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'username': _nameController.text.trim(),
+      'email': email,
+      'photoURL': 'https://cdn-icons-png.flaticon.com/512/711/711128.png'
+      // Add more fields if needed
+    });
   }
 
   @override
