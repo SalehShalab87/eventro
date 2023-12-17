@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 
-class CreateEventPage extends StatefulWidget {
-  const CreateEventPage({super.key});
+class AboutPage extends StatelessWidget {
+  const AboutPage({super.key});
 
-  @override
-  State<CreateEventPage> createState() => _CreateEventPageState();
-}
-
-class _CreateEventPageState extends State<CreateEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Create My Event',
+          'About',
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,

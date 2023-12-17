@@ -21,7 +21,7 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
         title: const Text(
           'Notificaions',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

@@ -52,7 +52,7 @@ class _EventDetailsState extends State<EventDetails> {
       appBar: AppBar(
         title: const Text(
           'Event details',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

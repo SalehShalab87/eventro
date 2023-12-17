@@ -46,7 +46,7 @@ class _ForgetMyPasswordPageState extends State<ForgetMyPasswordPage> {
             return AlertDialog(
               content: const Text(
                 'The password link sent! check your email',
-                style: TextStyle(fontFamily: 'Gilroy'),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               actions: [
                 MyButton(onTap: () => Navigator.pop(context), text: 'OK')
