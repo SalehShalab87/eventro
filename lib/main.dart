@@ -27,14 +27,7 @@ class Eventro extends StatelessWidget {
       // Set the initial route based on whether the user has seen the onboarding screen
       initialRoute: initScreen == 0 || initScreen == null ? 'onboard' : '/home',
       routes: {
-        '/home': (context) => ChangeNotifierProvider(
-              create: (context) {
-                Booking booking = Booking();
-                booking.init(context);
-                return booking;
-              },
-              builder: (context, child) => const AuthPage(),
-            ),
+        '/home': (context) => const AuthPage(),
         'onboard': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginPage(),
         '/notifications': (context) => const NotificationPage(),
@@ -58,11 +51,29 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Show the onboarding screen for the first time
-  if (initScreen == null || initScreen == 0) {
-    await preferences.setInt('initScreen', 1);
-    runApp(const Eventro());
-  } else {
-    runApp(const Eventro());
-  }
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) {
+            Booking booking = Booking();
+            booking.init(context);
+            return booking;
+          },
+        ),
+        // Add other providers as needed
+      ],
+      child: Builder(
+        builder: (context) {
+          // Show the onboarding screen for the first time
+          if (initScreen == null || initScreen == 0) {
+            preferences.setInt('initScreen', 1);
+            return const Eventro();
+          } else {
+            return const Eventro();
+          }
+        },
+      ),
+    ),
+  );
 }
