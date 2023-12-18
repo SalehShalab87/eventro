@@ -5,7 +5,7 @@ import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/event/create_event_page.dart';
-import 'package:eventro/pages/event/event_page.dart';
+import 'package:eventro/pages/event/events_page.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';

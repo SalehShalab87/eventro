@@ -1,5 +1,5 @@
 // ignore_for_file: file_names
-import 'package:eventro/pages/event/event_page.dart';
+import 'package:eventro/pages/event/events_page.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/home_page.dart';
 import 'package:eventro/pages/profile_page.dart';

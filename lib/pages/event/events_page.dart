@@ -1,3 +1,4 @@
+import 'package:eventro/components/all_events_list.dart';
 import 'package:eventro/pages/main/main_page.dart';
 import 'package:flutter/material.dart';
 
@@ -8,16 +9,16 @@ class EventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MainPage())),
-        ),
+        backgroundColor: Colors.grey[300],
         title: const Text(
-          'Events',
+          'All Upcomming Events',
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+      ),
+      body: const Padding(
+        padding: EdgeInsets.all(20.0),
+        child: AllEventsList(),
       ),
     );
   }

@@ -3,8 +3,8 @@
 import 'package:eventro/models/event.dart';
 import 'package:flutter/material.dart';
 
-class EventTile extends StatelessWidget {
-  EventTile({super.key, required this.event, required this.onTap});
+class EventTileAll extends StatelessWidget {
+  EventTileAll({super.key, required this.event, required this.onTap});
   Event event;
 
   //add to favorite function
@@ -13,8 +13,8 @@ class EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: Container(
-        margin: const EdgeInsets.only(left: 25),
-        width: 280,
+        height: 400,
+        width: 350,
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(12),
