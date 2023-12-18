@@ -22,6 +22,8 @@ class Booking extends ChangeNotifier {
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         Event event = Event(
+          maxCapacity: data['maxCapacity'] ?? 0,
+          currentAttendees: data['currentAttendees'] ?? 0,
           eventId: doc.id,
           imageUrl: data['imageUrl'] ?? '',
           location: data['location'] ?? '',
@@ -72,6 +74,8 @@ class Booking extends ChangeNotifier {
         for (var doc in querySnapshot.docs) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           Event event = Event(
+            maxCapacity: data['maxCapacity'] ?? 0,
+            currentAttendees: data['currentAttendees'] ?? 0,
             eventId: doc.id,
             imageUrl: data['imageUrl'] ?? '',
             location: data['location'] ?? '',
@@ -175,6 +179,8 @@ class Booking extends ChangeNotifier {
 
         // Create an Event object with the extracted data
         Event event = Event(
+          maxCapacity: eventData['maxCapacity'] ?? 0,
+          currentAttendees: eventData['currentAttendees'] ?? 0,
           eventId: eventId,
           imageUrl: eventData['imageUrl'] ?? '',
           location: eventData['location'] ?? '',

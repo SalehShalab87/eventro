@@ -108,6 +108,22 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  Text(
+                    'Current Attendees: ${event!.currentAttendees.toString()}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Max Capacity: ${event!.maxCapacity.toString()}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   // Display time
                   Text(
                     'Time: ${DateFormat('HH:mm:ss').format(event!.dateTime!)}',

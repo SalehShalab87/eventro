@@ -6,6 +6,8 @@ class Event {
   final String price;
   final String description;
   final DateTime? dateTime;
+  int maxCapacity;
+  int currentAttendees;
 
   Event({
     required this.eventId,
@@ -15,7 +17,10 @@ class Event {
     required this.dateTime,
     required this.price,
     required this.description,
+    required this.maxCapacity,
+    required this.currentAttendees,
   });
+
   Map<String, dynamic> toMap() {
     return {
       'eventId': eventId,
@@ -25,6 +30,8 @@ class Event {
       'description': description,
       'location': location,
       'dateTime': dateTime,
+      'maxCapacity': maxCapacity,
+      'currentAttendees': currentAttendees,
     };
   }
 }
