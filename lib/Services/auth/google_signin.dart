@@ -43,7 +43,6 @@ class GoogleServices {
         showErrorMessage(context, "Google Sign-In failed. User not found.");
       }
     } catch (e) {
-      Navigator.pop(context);
       showErrorMessage(context, e.toString());
     }
   }

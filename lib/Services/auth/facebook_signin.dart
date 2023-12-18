@@ -46,7 +46,6 @@ class FacebookServices {
             context, "Facebook Sign-In failed. Access token is null.");
       }
     } catch (e) {
-      Navigator.pop(context);
       showErrorMessage(context, e.toString());
     }
   }

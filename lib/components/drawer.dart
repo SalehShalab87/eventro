@@ -1,5 +1,4 @@
 import 'package:eventro/components/list_tile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -21,12 +20,9 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  User? _user;
-
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.instance.currentUser;
   }
 
   @override
