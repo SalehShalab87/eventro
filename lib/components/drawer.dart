@@ -39,13 +39,12 @@ class _MyDrawerState extends State<MyDrawer> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              DrawerHeader(
+              const DrawerHeader(
                 child: Center(
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(_user?.photoURL ?? ''),
-                    radius: 40,
-                  ),
-                ),
+                    child: Icon(
+                  Icons.person_outline,
+                  size: 120,
+                )),
               ),
               MyListTile(
                 icon: Icons.home,
