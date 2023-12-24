@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
@@ -16,34 +14,13 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> {
-  Event? event; // Use nullable Event to represent that it might be null
+  late Stream<Event?> eventStream;
+
   @override
   void initState() {
     super.initState();
-    // Fetch event details when the widget is initialized
-    fetchEventDetails();
-  }
-
-  Future<void> fetchEventDetails() async {
-    try {
-      // Fetch event details based on the eventId
-      event = await Booking().getEventDetails(context, widget.eventId);
-      // Update the UI with the fetched event details
-      setState(() {});
-    } catch (e) {
-      // Handle Firestore error
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content:
-              const Text('An error occurred while fetching event details.'),
-          actions: [
-            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-          ],
-        ),
-      );
-    }
+    // Initialize the Stream in initState
+    eventStream = Booking().getEventDetailsStream(context, widget.eventId);
   }
 
   @override
@@ -58,24 +35,59 @@ class _EventDetailsState extends State<EventDetails> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: event != null
-            ? Column(
+        child: StreamBuilder<Event?>(
+          stream: eventStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Loading state
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: Color(0xffEC6408),
+              ));
+            } else if (snapshot.hasError || snapshot.data == null) {
+              // Error state
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Error fetching event details.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          // Retry fetching the event details
+                          eventStream = Booking()
+                              .getEventDetailsStream(context, widget.eventId);
+                        });
+                      },
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              // Successful state
+              final event = snapshot.data!;
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Display the event image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
-                      event!.imageUrl,
+                      event.imageUrl,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Display event details such as title, price, location, date, and time
+                  // Display event details such as title, eventType, price, location, date, and time
                   Text(
-                    event!.title,
+                    event.title,
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -83,8 +95,9 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
+
                   Text(
-                    'Price: ${event!.price}',
+                    'Price: ${event.price}',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[700],
@@ -92,7 +105,15 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Location: ${event!.location}',
+                    'Event Type: ${event.eventType}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Location: ${event.location}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -101,23 +122,7 @@ class _EventDetailsState extends State<EventDetails> {
                   const SizedBox(height: 8),
                   // Display date
                   Text(
-                    'Date: ${DateFormat('yyyy-MM-dd').format(event!.dateTime!)}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Current Attendees: ${event!.currentAttendees.toString()}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Max Capacity: ${event!.maxCapacity.toString()}',
+                    'Date: ${DateFormat('yyyy-MM-dd').format(event.dateTime!)}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -126,7 +131,7 @@ class _EventDetailsState extends State<EventDetails> {
                   const SizedBox(height: 8),
                   // Display time
                   Text(
-                    'Time: ${DateFormat('HH:mm:ss').format(event!.dateTime!)}',
+                    'Time: ${DateFormat('HH:mm:ss').format(event.dateTime!)}',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -134,7 +139,24 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Description: ${event!.description}',
+                    'Current Attendees: ${event.currentAttendees.toString()}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Max Capacity: ${event.maxCapacity.toString()}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Display description
+                  Text(
+                    'Description: ${event.description}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -150,10 +172,10 @@ class _EventDetailsState extends State<EventDetails> {
                     text: 'Book Now',
                   ),
                 ],
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

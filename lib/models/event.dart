@@ -6,6 +6,7 @@ class Event {
   final String price;
   final String description;
   final DateTime? dateTime;
+  final String eventType; // New field
   int maxCapacity;
   int currentAttendees;
 
@@ -17,6 +18,7 @@ class Event {
     required this.dateTime,
     required this.price,
     required this.description,
+    required this.eventType,
     required this.maxCapacity,
     required this.currentAttendees,
   });
@@ -30,6 +32,7 @@ class Event {
       'description': description,
       'location': location,
       'dateTime': dateTime,
+      'eventType': eventType,
       'maxCapacity': maxCapacity,
       'currentAttendees': currentAttendees,
     };
