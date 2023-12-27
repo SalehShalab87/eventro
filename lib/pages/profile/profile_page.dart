@@ -7,7 +7,7 @@ import 'package:eventro/components/profile_list_tile.dart';
 import 'package:eventro/pages/about_page.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/event/user_events.dart';
-import 'package:eventro/pages/upadte_profile_screen.dart';
+import 'package:eventro/pages/profile/upadte_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
-import 'package:eventro/pages/profile_page.dart';
+import 'package:eventro/pages/profile/profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 

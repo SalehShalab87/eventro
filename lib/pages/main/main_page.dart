@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 import 'package:eventro/pages/event/events_page.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
-import 'package:eventro/pages/home_page.dart';
-import 'package:eventro/pages/profile_page.dart';
+import 'package:eventro/pages/main/home_page.dart';
+import 'package:eventro/pages/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 

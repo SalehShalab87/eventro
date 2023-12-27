@@ -52,7 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   //left side skip button
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
+                      Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
                         return const LoginPage();
                       }));
@@ -76,7 +76,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnLastPage
                       ? GestureDetector(
                           onTap: () {
-                            Navigator.push(context,
+                            Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (context) {
                               return const LoginPage();
                             }));
