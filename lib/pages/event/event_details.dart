@@ -180,3 +180,5 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 }
+
+//TODO map navegation to the event functioalty
