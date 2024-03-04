@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '86917190723',
     projectId: 'eventro-24121',
     storageBucket: 'eventro-24121.appspot.com',
-    androidClientId: '86917190723-mbeg6lhecef37iruu7sptnu3t73a8vdq.apps.googleusercontent.com',
+    androidClientId: '86917190723-6agsn92o4f7gvbg1qctogsemqbcd1sii.apps.googleusercontent.com',
     iosClientId: '86917190723-3gj9oujinvfunkelrbn7itsg9c87pq6k.apps.googleusercontent.com',
     iosBundleId: 'com.example.eventro',
   );
