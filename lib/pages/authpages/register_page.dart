@@ -264,9 +264,6 @@ class _RegisterPageState extends State<RegitserPage> {
                       width: 10,
                     ),
 
-                    // Apple button
-                    SquareTile(onTap: () => {}, ImagePath: 'images/apple.png'),
-
                     const SizedBox(
                       width: 10,
                     ),
