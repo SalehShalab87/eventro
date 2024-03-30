@@ -1,16 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eventro/Services/auth/sign_out.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
-import 'package:eventro/components/profile_list_tile.dart';
-import 'package:eventro/pages/about_page.dart';
-import 'package:eventro/pages/event/favorite_page.dart';
-import 'package:eventro/pages/event/user_events.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -264,6 +258,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   void SaveUserDetails() async {
     if (_emailController.text.isEmpty || _nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
