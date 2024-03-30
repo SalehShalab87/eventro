@@ -3,12 +3,12 @@
 import 'package:flutter/material.dart';
 
 //your name textfield
-class MyNmaeTextField extends StatelessWidget {
+class MyNameTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
 
-  const MyNmaeTextField({
+  const MyNameTextField({
     super.key,
     required this.controller,
     required this.hintText,

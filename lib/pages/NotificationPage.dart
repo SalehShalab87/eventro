@@ -16,7 +16,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.push(context,
+          onPressed: () => Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const MainPage())),
         ),
         title: const Text(

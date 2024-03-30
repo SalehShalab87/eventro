@@ -41,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       // Attempt to sign in with user
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: EmailController.text,
         password: PasswordController.text,
       );
@@ -49,17 +50,19 @@ class _LoginPageState extends State<LoginPage> {
       // Pop the loading circle
       Navigator.pop(context);
 
-      // Check if sign-in is successful
-      if (FirebaseAuth.instance.currentUser != null) {
+      // Check if sign-in is successful and email is verified
+      if (FirebaseAuth.instance.currentUser != null &&
+          FirebaseAuth.instance.currentUser!.emailVerified) {
         // Save user details to Firestore
         saveUserDetailsToFirestore();
 
         // Navigate to the home screen
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        // Handle the case where the user is not signed in
+        // Handle the case where the user is not signed in or email is not verified
         // Show an error message or take appropriate action
-        ShowErrorMassage("Sign-in failed. User not found.");
+        ShowErrorMassage(
+            "Sign-in failed. User not found or email not verified.");
       }
     } on FirebaseAuthException catch (e) {
       // Pop the loading circle

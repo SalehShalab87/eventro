@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
   String userEmail = '';
+  String userName = '';
   File? _pickedImage;
   bool isLoading = false;
   String? downloadURL;
@@ -60,8 +61,10 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       DocumentSnapshot userDoc = await users.doc(currentUser.uid).get();
       String email = userDoc['email'] ?? '';
+      String name = userDoc['name'] ?? '';
       setState(() {
         userEmail = email;
+        userName = name;
       });
     } catch (e) {
       showDialog(
@@ -106,10 +109,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 120,
                       height: 120,
                       child: CircleAvatar(
+                        backgroundColor: Colors.black,
                         backgroundImage: _pickedImage != null
                             ? Image.file(_pickedImage!).image
-                            : NetworkImage(
-                                downloadURL ?? currentUser.photoURL ?? ''),
+                            : NetworkImage(downloadURL ??
+                                currentUser.photoURL ??
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
                         radius: 50,
                       ),
                     ),
@@ -146,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 10,
               ),
               Text(
-                currentUser.displayName!,
+                userName,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),

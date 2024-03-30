@@ -53,10 +53,10 @@ class _RegisterPageState extends State<RegitserPage> {
       // Check if the password is confirmed
       if (PasswordConfirmed()) {
         // Create user with email, password, and display name
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: _emailController.text.trim(),
+                password: _passwordController.text.trim());
 
         // Upload user information to Cloud Firestore
         await uploadUserDataToFirestore();
@@ -65,18 +65,27 @@ class _RegisterPageState extends State<RegitserPage> {
         await FirebaseAuth.instance.currentUser
             ?.updateDisplayName(_nameController.text.trim());
 
+        // Send email verification
+        await userCredential.user!.sendEmailVerification();
+
         // Pop the loading circle
         Navigator.pop(context);
 
-        // Check if signup is successful
-        if (FirebaseAuth.instance.currentUser != null) {
-          // Navigate to the home screen
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          // Handle the case where the user is not signed up
-          // Show an error message or take appropriate action
-          ShowErrorMassage("Signup failed. User not created.");
-        }
+        // Show message prompting the user to verify their email
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Signup Successful"),
+              content: Text(
+                "An email verification link has been sent to ${_emailController.text}. Please verify your email before logging in.",
+              ),
+              actions: [
+                MyButton(onTap: () => Navigator.of(context).pop(), text: 'OK')
+              ],
+            );
+          },
+        );
       } else {
         // Pop the loading circle
         Navigator.pop(context);
@@ -134,9 +143,9 @@ class _RegisterPageState extends State<RegitserPage> {
 
     // Add user data to Firestore
     await FirebaseFirestore.instance.collection('users').doc(uid).set({
-      'username': _nameController.text.trim(),
+      'name': _nameController.text.trim(),
       'email': email,
-      'photoURL': 'https://cdn-icons-png.flaticon.com/512/711/711128.png'
+      'photoURL': 'https://cdn-icons-png.flaticon.com/512/711/711128.png',
       // Add more fields if needed
     });
   }
@@ -181,7 +190,7 @@ class _RegisterPageState extends State<RegitserPage> {
                 ),
 
                 //user name textfield
-                MyNmaeTextField(
+                MyNameTextField(
                     controller: _nameController, hintText: 'Your Name'),
 
                 // Username textfield

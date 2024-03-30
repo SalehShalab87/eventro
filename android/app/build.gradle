@@ -27,7 +27,7 @@ android {
 
     namespace "com.example.eventro"
     compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    ndkVersion "26.2.11394342"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
