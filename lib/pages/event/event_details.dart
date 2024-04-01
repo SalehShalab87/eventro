@@ -23,6 +23,8 @@ class _EventDetailsState extends State<EventDetails> {
     eventStream = Booking().getEventDetailsStream(context, widget.eventId);
   }
 
+  void bookEvent() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +79,7 @@ class _EventDetailsState extends State<EventDetails> {
                   // Display the event image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
+                    child: Image.network(
                       event.imageUrl,
                       height: 200,
                       width: double.infinity,
@@ -165,10 +167,7 @@ class _EventDetailsState extends State<EventDetails> {
                   const SizedBox(height: 16),
                   // Booking button
                   MyButton(
-                    onTap: () {
-                      // Implement your booking logic here
-                      // You can navigate to a booking page or perform any other action
-                    },
+                    onTap: () => bookEvent(),
                     text: 'Book Now',
                   ),
                 ],
@@ -180,5 +179,3 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 }
-
-//TODO map navegation to the event functioalty

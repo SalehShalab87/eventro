@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 //your name textfield
 class MyNameTextField extends StatelessWidget {
@@ -199,6 +200,84 @@ class MySearchTextField extends StatelessWidget {
           hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
+      ),
+    );
+  }
+}
+
+//Input Text Form field
+
+class InputFiled extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final List<TextInputFormatter>? inputFormatter;
+
+  const InputFiled({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.inputFormatter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        vertical: 10,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: TextField(
+        cursorColor: const Color(0xffEC6408),
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.black54),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+class DateTimeInput extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final IconData icon;
+  final VoidCallback onPressed;
+  const DateTimeInput(
+      {super.key,
+      required this.controller,
+      required this.hintText,
+      required this.icon,
+      required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        vertical: 10,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: TextFormField(
+        cursorColor: const Color(0xffEC6408),
+        controller: controller,
+        decoration: InputDecoration(
+          suffixIcon: IconButton(icon: Icon(icon), onPressed: onPressed),
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.black54),
+          border: InputBorder.none,
+        ),
+        readOnly: true,
       ),
     );
   }

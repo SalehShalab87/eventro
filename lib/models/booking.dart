@@ -33,6 +33,7 @@ class Booking extends ChangeNotifier {
           price: data['price'] ?? '',
           description: data['description'] ?? '',
           eventType: data['eventType'] ?? '',
+          approvalStatus: data['status'] ?? '',
         );
         eventsToBook.add(event);
       }
@@ -86,6 +87,7 @@ class Booking extends ChangeNotifier {
             price: data['price'] ?? '',
             description: data['description'] ?? '',
             eventType: data['eventType'] ?? '',
+            approvalStatus: data['status'] ?? '',
           );
           userFavorite.add(event);
         }
@@ -195,6 +197,7 @@ class Booking extends ChangeNotifier {
             price: eventData['price'] ?? '',
             description: eventData['description'] ?? '',
             eventType: eventData['eventType'] ?? '',
+            approvalStatus: eventData['status'] ?? '',
           );
 
           return event;

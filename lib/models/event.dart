@@ -9,6 +9,7 @@ class Event {
   final String eventType; // New field
   int maxCapacity;
   int currentAttendees;
+  String approvalStatus;
 
   Event({
     required this.eventId,
@@ -21,6 +22,7 @@ class Event {
     required this.eventType,
     required this.maxCapacity,
     required this.currentAttendees,
+    required this.approvalStatus,
   });
 
   Map<String, dynamic> toMap() {
@@ -35,6 +37,7 @@ class Event {
       'eventType': eventType,
       'maxCapacity': maxCapacity,
       'currentAttendees': currentAttendees,
+      'status': approvalStatus,
     };
   }
 }

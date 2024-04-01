@@ -25,12 +25,12 @@ class EventTileAll extends StatelessWidget {
               // event pic
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(event.imageUrl),
-              ),
-              //description
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Text(event.description),
+                child: Image.network(
+                  event.imageUrl,
+                  width: double.infinity,
+                  height: 310,
+                  fit: BoxFit.cover,
+                ),
               ),
               //price + deatails
               Padding(
