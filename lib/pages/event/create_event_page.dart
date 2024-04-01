@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eventro/components/my_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:eventro/components/my_textfield.dart';
@@ -88,6 +89,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
             .collection('eventsCollection')
             .add(eventData);
 
+        // Assign the event to the current user
+        await _assignEventToCurrentUser(docRef.id);
+
         // Now you can do something with the event, like display a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -118,6 +122,37 @@ class _CreateEventPageState extends State<CreateEventPage> {
           content: Text(
             "Please select an image for your event",
             style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _assignEventToCurrentUser(String eventId) async {
+    try {
+      // Get the ID of the current user
+      final userId = FirebaseAuth.instance.currentUser!.uid;
+
+      // Create a reference to the user's document
+      DocumentReference userRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      // Create a reference to the event document
+      DocumentReference eventRef = FirebaseFirestore.instance
+          .collection('eventsCollection')
+          .doc(eventId);
+
+      // Update the user's document to store the event reference
+      await userRef.update({
+        'events': FieldValue.arrayUnion([eventRef]),
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "error : $e",
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       );

@@ -90,10 +90,10 @@ class _FavoriteEventsState extends State<FavoriteEvents> {
           child: ListTile(
             contentPadding: const EdgeInsets.all(8),
             tileColor: Colors.grey[200],
-            leading: Image.asset(
+            leading: Image.network(
               widget.event.imageUrl,
-              width: 80,
-              height: 80,
+              width: 100,
+              height: 100,
               fit: BoxFit.cover,
             ),
             title: Text(
