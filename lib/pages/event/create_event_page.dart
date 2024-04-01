@@ -55,16 +55,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xffEC6408),
-            content: Text(
-              "Please select Image for your Event",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        );
       }
     });
   }
