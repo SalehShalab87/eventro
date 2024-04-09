@@ -143,7 +143,7 @@ class _EventDetailsState extends State<EventDetails> {
                       event.imageUrl,
                       height: 200,
                       width: double.infinity,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   const SizedBox(height: 16),
