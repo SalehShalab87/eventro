@@ -16,4 +16,3 @@ class MyEvents extends StatelessWidget {
     );
   }
 }
-// TODO user created event

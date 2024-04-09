@@ -13,7 +13,7 @@ class EventTileAll extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: Container(
-        height: 400,
+        height: 380,
         width: 350,
         decoration: BoxDecoration(
           color: Colors.grey[200],

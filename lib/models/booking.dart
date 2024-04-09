@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eventro/components/my_button.dart';
+import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/models/event.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -273,6 +274,75 @@ class Booking extends ChangeNotifier {
           ],
         ),
       );
+    }
+  }
+
+  Future<bool> bookEvent(Event event) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        // If user is not logged in, return false
+        return false;
+      }
+
+      // Check if the event is already full
+      if (event.currentAttendees >= event.maxCapacity) {
+        // If the event is full, return false to indicate unsuccessful booking
+        return false;
+      }
+
+      // Create a booking record in Firestore
+      await firestore.collection('bookings').add({
+        'userId': user.uid,
+        'eventId': event.eventId,
+        'dateOfBooked': Timestamp.now(),
+        'imageUrl': event.imageUrl,
+        'title': event.title,
+        'location': event.location,
+        'dateTime': event.dateTime,
+        'eventType': event.eventType,
+        'currentAttendees': event.currentAttendees,
+      });
+
+      // Update the current attendees count for the event
+      await events.doc(event.eventId).update({
+        'currentAttendees': FieldValue.increment(1),
+      });
+
+      // Return true to indicate successful booking
+      return true;
+    } catch (e) {
+      // Return false if any error occurs during booking
+      return false;
+    }
+  }
+
+  // check event booking status method
+  Future<bool> checkEventBookingStatus(
+      BuildContext context, String eventId) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        // If user is not logged in, return false
+        return false;
+      }
+
+      // Query Firestore to check if the user has booked the event
+      QuerySnapshot querySnapshot = await firestore
+          .collection('bookings')
+          .where('userId', isEqualTo: user.uid)
+          .where('eventId', isEqualTo: eventId)
+          .get();
+
+      // If a booking document is found for the user and event, return true
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      // Handle errors gracefully by displaying an error message using showErrorMessage
+      showErrorMessage(
+          context, 'An error occurred while checking event booking status: $e');
+      return false;
     }
   }
 }

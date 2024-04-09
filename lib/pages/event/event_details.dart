@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
@@ -15,15 +17,77 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
   late Stream<Event?> eventStream;
+  bool isEventBooked = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the Stream in initState
     eventStream = Booking().getEventDetailsStream(context, widget.eventId);
+    checkEventBookingStatus();
   }
 
-  void bookEvent() {}
+  //check booking status
+  Future<void> checkEventBookingStatus() async {
+    // Fetch the booking status of the event
+    bool booked =
+        await Booking().checkEventBookingStatus(context, widget.eventId);
+
+    setState(() {
+      isEventBooked = booked;
+    });
+  }
+
+  Future<void> bookEvent(Event event) async {
+    if (isEventBooked) {
+      // If event is already booked, show alert dialog
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Event Already Booked'),
+          content: const Text(
+              'You have already booked this event. Check My Events Page'),
+          actions: [
+            MyButton(
+              onTap: () => Navigator.pop(context),
+              text: 'OK ->',
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    bool success = await Booking().bookEvent(event);
+
+    if (success) {
+      // If booking is successful, send notification
+
+      //Booking().sendNotification(event);**********************
+
+      // Show snackbar for successful booking
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Event booked successfully!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Update state to reflect booking status
+      setState(() {
+        isEventBooked = true;
+      });
+    } else {
+      // If booking fails, show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Failed to book the event. Please try again later.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +105,12 @@ class _EventDetailsState extends State<EventDetails> {
           stream: eventStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              // Loading state
               return const Center(
-                  child: CircularProgressIndicator(
-                color: Color(0xffEC6408),
-              ));
+                child: CircularProgressIndicator(
+                  color: Color(0xffEC6408),
+                ),
+              );
             } else if (snapshot.hasError || snapshot.data == null) {
-              // Error state
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +123,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          // Retry fetching the event details
                           eventStream = Booking()
                               .getEventDetailsStream(context, widget.eventId);
                         });
@@ -71,12 +133,10 @@ class _EventDetailsState extends State<EventDetails> {
                 ),
               );
             } else {
-              // Successful state
               final event = snapshot.data!;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Display the event image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
@@ -87,7 +147,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Display event details such as title, eventType, price, location, date, and time
                   Text(
                     event.title,
                     style: const TextStyle(
@@ -97,7 +156,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
-
                   Text(
                     'Price: ${event.price}',
                     style: TextStyle(
@@ -122,7 +180,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Display date
                   Text(
                     'Date: ${DateFormat('yyyy-MM-dd').format(event.dateTime!)}',
                     style: TextStyle(
@@ -131,7 +188,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Display time
                   Text(
                     'Time: ${DateFormat('HH:mm:ss').format(event.dateTime!)}',
                     style: TextStyle(
@@ -156,7 +212,6 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Display description
                   Text(
                     'Description: ${event.description}',
                     style: const TextStyle(
@@ -165,10 +220,9 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Booking button
                   MyButton(
-                    onTap: () => bookEvent(),
-                    text: 'Book Now',
+                    onTap: () => bookEvent(event),
+                    text: isEventBooked ? 'Event Booked' : 'Book Now',
                   ),
                 ],
               );

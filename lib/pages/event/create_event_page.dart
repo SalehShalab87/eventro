@@ -11,7 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateEventPage extends StatefulWidget {
-  const CreateEventPage({Key? key}) : super(key: key);
+  const CreateEventPage({super.key});
 
   @override
   State<CreateEventPage> createState() => _CreateEventPageState();
@@ -277,7 +277,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               //date time
               DateTimeInput(
                 controller: _dateTimeController,
-                hintText: 'Date',
+                hintText: 'Date And Time',
                 icon: Icons.calendar_today,
                 onPressed: () async {
                   final selectedDateTime = await _selectDateTime(context);
