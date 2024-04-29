@@ -57,35 +57,102 @@ class _EventDetailsState extends State<EventDetails> {
       return;
     }
 
-    bool success = await Booking().bookEvent(event);
+    // Show confirmation dialog before booking
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Booking'),
+        content: const Text('Do you want to book this event?'),
+        actions: [
+          MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
+          const SizedBox(
+            height: 10,
+          ),
+          MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
+        ],
+      ),
+    );
 
-    if (success) {
-      // If booking is successful, send notification
+    if (confirm != null && confirm) {
+      bool success = await Booking().bookEvent(event);
 
-      //Booking().sendNotification(event);**********************
+      if (success) {
+        // If booking is successful, send notification
 
-      // Show snackbar for successful booking
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Event booked successfully!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        //Booking().sendNotification(event);**********************
 
-      // Update state to reflect booking status
-      setState(() {
-        isEventBooked = true;
-      });
-    } else {
-      // If booking fails, show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Failed to book the event. Please try again later.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        // Show snackbar for successful booking
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Event booked successfully!... Check MyEvents Page'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Update state to reflect booking status
+        setState(() {
+          isEventBooked = true;
+        });
+      } else {
+        // If booking fails, show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('Failed to book the event. Please try again later.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> cancelBooking(Event event) async {
+    // Show confirmation dialog before canceling
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Cancel Booking'),
+        content: const Text('Do you want to cancel this booking?'),
+        actions: [
+          MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
+          const SizedBox(
+            height: 10,
+          ),
+          MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
+        ],
+      ),
+    );
+
+    if (confirm != null && confirm) {
+      // Implement logic to cancel the booking
+      bool success = await Booking().cancelBooking(context, event.eventId);
+
+      if (success) {
+        // If cancellation is successful, show snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Booking cancelled successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Update state to reflect booking status
+        setState(() {
+          isEventBooked = false;
+        });
+      } else {
+        // If cancellation fails, show snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content:
+                Text('Failed to cancel the booking. Please try again later.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
@@ -221,8 +288,14 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                   const SizedBox(height: 16),
                   MyButton(
-                    onTap: () => bookEvent(event),
-                    text: isEventBooked ? 'Event Booked' : 'Book Now',
+                    onTap: () {
+                      if (isEventBooked) {
+                        cancelBooking(event);
+                      } else {
+                        bookEvent(event);
+                      }
+                    },
+                    text: isEventBooked ? 'Cancel Booking' : 'Book Now',
                   ),
                 ],
               );

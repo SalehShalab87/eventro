@@ -345,4 +345,49 @@ class Booking extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> cancelBooking(BuildContext context, String eventId) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        // If user is not logged in, return false
+        return false;
+      }
+
+      // Query the bookings collection to find the booking document
+      QuerySnapshot bookingSnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('eventId', isEqualTo: eventId)
+          .where('userId', isEqualTo: user.uid)
+          .get();
+
+      // Check if any booking documents are found
+      if (bookingSnapshot.docs.isEmpty) {
+        // If no matching booking document is found, return false
+        return false;
+      }
+
+      // Get the ID of the booking document
+      String bookingId = bookingSnapshot.docs.first.id;
+
+      // Delete the record from Cloud Firestore
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId)
+          .delete();
+
+      // Update the current attendees count for the event
+      await events.doc(eventId).update({
+        'currentAttendees': FieldValue.increment(-1),
+      });
+
+      return true;
+    } catch (e) {
+      // Handle errors gracefully by displaying an error message using showErrorMessage
+      showErrorMessage(
+          context, 'An error occurred while canceling event booking: $e');
+      return false;
+    }
+  }
 }

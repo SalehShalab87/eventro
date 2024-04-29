@@ -1,10 +1,55 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:eventro/components/created_event_tile.dart';
+import 'package:eventro/components/my_button.dart';
+import 'package:eventro/components/show_error_message.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyEvents extends StatelessWidget {
   const MyEvents({super.key});
 
+  // Function to delete an event document from Firestore
+  Future<void> deleteEvent(BuildContext context, String eventId) async {
+    try {
+      bool? confirm = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Booking'),
+          content: const Text('Do you want to book this event?'),
+          actions: [
+            MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
+            const SizedBox(height: 10),
+            MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
+          ],
+        ),
+      );
+      if (confirm != null && confirm) {
+        await FirebaseFirestore.instance
+            .collection('eventsCollection')
+            .doc(eventId)
+            .delete();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Event deleted successfully!...'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+      // You may want to add additional logic here, such as updating the UI or showing a confirmation message.
+    } catch (e) {
+      showErrorMessage(context, 'Unknown Error.... try again!');
+      // Handle errors gracefully, such as showing an error message.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final String userId =
+        FirebaseAuth.instance.currentUser!.uid; // Your user ID here
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -12,6 +57,176 @@ class MyEvents extends StatelessWidget {
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            child: Text(
+              'Created Events',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Flexible(
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userId)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color(0xffEC6408),
+                  ));
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    final Map<String, dynamic>? userData =
+                        snapshot.data!.data() as Map<String, dynamic>?;
+
+                    if (userData != null && userData.containsKey('events')) {
+                      List<DocumentReference> eventRefs =
+                          List<DocumentReference>.from(userData['events']);
+
+                      return ListView.builder(
+                        itemCount: eventRefs.length,
+                        itemBuilder: (context, index) {
+                          return FutureBuilder<DocumentSnapshot>(
+                            future: eventRefs[index].get(),
+                            builder: (context, eventSnapshot) {
+                              if (eventSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator(
+                                  color: Color(0xffEC6408),
+                                ));
+                              } else if (eventSnapshot.hasError) {
+                                return Text(
+                                    'Error fetching event: ${eventSnapshot.error}');
+                              } else {
+                                if (eventSnapshot.hasData &&
+                                    eventSnapshot.data!.exists) {
+                                  final eventData = eventSnapshot.data!.data()
+                                      as Map<String, dynamic>;
+
+                                  return CreatedEventTile(
+                                    imageUrl: eventData['imageUrl'] ?? '',
+                                    eventName: eventData['title'] ?? '',
+                                    currentAttendees:
+                                        eventData['currentAttendees'] ?? 0,
+                                    onDelete: () {
+                                      deleteEvent(
+                                          context, eventSnapshot.data!.id);
+                                    },
+                                    eventID: eventSnapshot.data!.id,
+                                  );
+                                } else {
+                                  return const Center(
+                                      child:
+                                          Text('No Created Events available'));
+                                }
+                              }
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                          child: Text('No Created Events available'));
+                    }
+                  } else {
+                    return const Text('No data available');
+                  }
+                }
+              },
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            child: Text(
+              'Booked Events',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Flexible(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('bookings')
+                  .where('userId', isEqualTo: userId)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color(0xffEC6408),
+                  ));
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  if (snapshot.hasData) {
+                    final List<DocumentSnapshot> bookingDocs =
+                        snapshot.data!.docs;
+
+                    if (bookingDocs.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: bookingDocs.length,
+                        itemBuilder: (context, index) {
+                          final String eventId = bookingDocs[index]['eventId'];
+                          return FutureBuilder<DocumentSnapshot>(
+                            future: FirebaseFirestore.instance
+                                .collection('eventsCollection')
+                                .doc(eventId)
+                                .get(),
+                            builder: (context, eventSnapshot) {
+                              if (eventSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xffEC6408),
+                                  ),
+                                );
+                              } else if (eventSnapshot.hasError) {
+                                return Text(
+                                    'Error fetching event: ${eventSnapshot.error}');
+                              } else {
+                                if (eventSnapshot.hasData &&
+                                    eventSnapshot.data!.exists) {
+                                  final eventData = eventSnapshot.data!.data()
+                                      as Map<String, dynamic>;
+                                  return CreatedEventTile(
+                                    imageUrl: eventData['imageUrl'] ?? '',
+                                    eventName: eventData['title'] ?? '',
+                                    currentAttendees:
+                                        eventData['currentAttendees'] ?? 0,
+                                    onDelete: () {
+                                      // Implement delete logic if needed
+                                    },
+                                    eventID: eventId,
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(child: Text('No booked events'));
+                    }
+                  } else {
+                    return const Center(child: Text('No data available'));
+                  }
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
