@@ -1,13 +1,11 @@
-import 'package:eventro/components/my_button.dart';
 import 'package:flutter/material.dart';
 
 void showErrorMessage(BuildContext context, String message) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Error'),
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
       content: Text(message),
-      actions: [MyButton(onTap: () => Navigator.pop(context), text: 'OK')],
+      backgroundColor: Colors.red,
+      duration: const Duration(seconds: 5),
     ),
   );
 }

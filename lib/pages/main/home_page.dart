@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                 child: EventListBuilder(),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 25, left: 25, right: 25),
+                padding: EdgeInsets.only(top: 40, left: 25, right: 25),
                 child: Divider(color: Colors.white),
               ),
               // Hot picks or additional sections can be added here

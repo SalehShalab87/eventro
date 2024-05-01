@@ -1,4 +1,3 @@
-import 'package:eventro/models/event.dart';
 import 'package:eventro/pages/event/event_details.dart';
 import 'package:flutter/material.dart';
 

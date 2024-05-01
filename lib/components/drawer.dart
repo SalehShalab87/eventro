@@ -40,6 +40,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     child: Icon(
                   Icons.person_outline,
                   size: 120,
+                  color: Colors.black54,
                 )),
               ),
               MyListTile(

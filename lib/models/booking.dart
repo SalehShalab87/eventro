@@ -19,7 +19,8 @@ class Booking extends ChangeNotifier {
   Future<List<Event>> getEventsToBook(BuildContext context) async {
     try {
       eventsToBook.clear(); // Clear the list before fetching new data
-      QuerySnapshot querySnapshot = await events.get();
+      QuerySnapshot querySnapshot =
+          await events.where('status', isEqualTo: 'approved').get();
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         Event event = Event(

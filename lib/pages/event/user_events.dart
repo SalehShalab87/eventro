@@ -3,6 +3,7 @@
 import 'package:eventro/components/created_event_tile.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/show_error_message.dart';
+import 'package:eventro/models/booking.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,12 +13,13 @@ class MyEvents extends StatelessWidget {
 
   // Function to delete an event document from Firestore
   Future<void> deleteEvent(BuildContext context, String eventId) async {
+    BuildContext dialogContext = context;
     try {
       bool? confirm = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Confirm Booking'),
-          content: const Text('Do you want to book this event?'),
+          title: const Text('Confirm Deleting'),
+          content: const Text('Do you want to delet this event?'),
           actions: [
             MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
             const SizedBox(height: 10),
@@ -38,10 +40,43 @@ class MyEvents extends StatelessWidget {
           ),
         );
       }
-      // You may want to add additional logic here, such as updating the UI or showing a confirmation message.
     } catch (e) {
-      showErrorMessage(context, 'Unknown Error.... try again!');
+      showErrorMessage(dialogContext, 'Unknown Error.... try again!');
       // Handle errors gracefully, such as showing an error message.
+    }
+  }
+
+  Future<void> deletBookedEvent(BuildContext context, String eventId) async {
+    BuildContext dialogContext = context;
+    try {
+      bool? confirm = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Canceling'),
+          content:
+              const Text('Do you want to cancel the booking for this event?'),
+          actions: [
+            MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
+            const SizedBox(height: 10),
+            MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
+          ],
+        ),
+      );
+      if (confirm != null && confirm) {
+        bool success = await Booking().cancelBooking(context, eventId);
+        if (success) {
+          // If cancellation is successful, show snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.green,
+              content: Text('Booking cancelled successfully!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      showErrorMessage(dialogContext, 'Unknown Error.... try again!');
     }
   }
 
@@ -204,12 +239,14 @@ class MyEvents extends StatelessWidget {
                                     currentAttendees:
                                         eventData['currentAttendees'] ?? 0,
                                     onDelete: () {
-                                      // Implement delete logic if needed
+                                      deletBookedEvent(context, eventId);
                                     },
                                     eventID: eventId,
                                   );
                                 } else {
-                                  return const SizedBox();
+                                  return const Center(
+                                      child:
+                                          Text('No Created Events available'));
                                 }
                               }
                             },
