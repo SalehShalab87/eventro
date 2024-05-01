@@ -266,12 +266,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
               InputFiled(
                 controller: _titleController,
                 hintText: 'Event Title',
+                type: TextInputType.text,
               ),
 
               //event type
               InputFiled(
                 controller: _eventTypeController,
                 hintText: 'Event Type',
+                type: TextInputType.text,
               ),
 
               //date time
@@ -293,6 +295,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               InputFiled(
                 controller: _locationController,
                 hintText: 'Location',
+                type: TextInputType.text,
               ),
 
               //max capacity
@@ -302,12 +305,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 inputFormatter: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly,
                 ],
+                type: TextInputType.number,
               ),
 
               //description
               InputFiled(
                 controller: _descriptionController,
                 hintText: 'Description',
+                type: TextInputType.multiline,
               ),
 
               const SizedBox(

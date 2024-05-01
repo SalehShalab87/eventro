@@ -27,6 +27,7 @@ class MyNameTextField extends StatelessWidget {
         border: Border.all(color: Colors.grey),
       ),
       child: TextField(
+        keyboardType: TextInputType.name,
         controller: controller,
         obscureText: obscureText,
         cursorColor: const Color(0xffEC6408),
@@ -68,6 +69,7 @@ class MyEmailTextField extends StatelessWidget {
         border: Border.all(color: Colors.grey),
       ),
       child: TextField(
+        keyboardType: TextInputType.emailAddress,
         cursorColor: const Color(0xffEC6408),
         controller: controller,
         obscureText: obscuretext,
@@ -211,12 +213,14 @@ class InputFiled extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final List<TextInputFormatter>? inputFormatter;
+  final TextInputType type;
 
   const InputFiled({
     super.key,
     required this.controller,
     required this.hintText,
     this.inputFormatter,
+    required this.type,
   });
 
   @override
@@ -232,6 +236,7 @@ class InputFiled extends StatelessWidget {
         border: Border.all(color: Colors.grey),
       ),
       child: TextField(
+        keyboardType: type,
         cursorColor: const Color(0xffEC6408),
         controller: controller,
         decoration: InputDecoration(
