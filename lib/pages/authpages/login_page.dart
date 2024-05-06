@@ -25,11 +25,52 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // Text Editing Controllers
   final EmailController = TextEditingController();
-
   final PasswordController = TextEditingController();
+  Map<String, dynamic>? adminCredentials;
+
+  // Checkbox state
+  bool isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Retrieve admin credentials when the login page is initialized
+    getAdminCredentials().then((credentials) {
+      // Check if the widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          adminCredentials = credentials;
+        });
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> getAdminCredentials() async {
+    try {
+      // Get a reference to the admins collection in Firestore
+      DocumentSnapshot adminsSnapshot = await FirebaseFirestore.instance
+          .collection('admin')
+          .doc('eventroadmin')
+          .get();
+
+      // Check if any admin documents exist
+      if (adminsSnapshot.exists) {
+        // Extract the admin credentials from the first document
+        Map<String, dynamic> adminData =
+            adminsSnapshot.data() as Map<String, dynamic>;
+        return adminData;
+      } else {
+        // No admin documents found
+        return {};
+      }
+    } catch (e) {
+      // Error retrieving admin credentials
+      showErrorMessage(context, e.toString());
+      return {};
+    }
+  }
 
   void SignUserIn() async {
-    // Show loading circle
     showDialog(
       context: context,
       builder: (context) {
@@ -40,60 +81,43 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     try {
-      // Attempt to sign in with user
+      // Get user input credentials
+      String userEmail = EmailController.text.trim();
+      String userPassword = PasswordController.text.trim();
 
-      // Pop the loading circle
-      Navigator.pop(context);
-
-      // Check if sign-in is successful and email is verified
-      if (FirebaseAuth.instance.currentUser != null &&
-          FirebaseAuth.instance.currentUser!.emailVerified) {
-        // Save user details to Firestore
-        saveUserDetailsToFirestore();
-
-        // Navigate to the home screen
-        Navigator.pushReplacementNamed(context, '/home');
+      if (isAdmin) {
+        // If isAdmin is true, attempt admin login
+        if (adminCredentials != null &&
+            adminCredentials!['email'] == userEmail &&
+            adminCredentials!['password'] == userPassword) {
+          // User is logging in as an admin
+          // Perform admin login actions (e.g., navigate to admin dashboard)
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/admin_dashboard', (_) => false);
+        } else {
+          Navigator.pop(context);
+          // Invalid admin credentials
+          ShowErrorMassage("Invalid admin credentials.");
+        }
       } else {
-        // Handle the case where the user is not signed in or email is not verified
-        // Show an error message or take appropriate action
-        ShowErrorMassage(
-            "Sign-in failed. User not found or email not verified.");
-      }
-    } on FirebaseAuthException catch (e) {
-      // Pop the loading circle
-      Navigator.pop(context);
+        // Perform regular user login with email and password
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: userEmail,
+          password: userPassword,
+        );
 
-      // Show an error message
-      ShowErrorMassage(e.message.toString());
-    }
-  }
-
-  void saveUserDetailsToFirestore() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Reference to Firestore
-        final firestore = FirebaseFirestore.instance;
-
-        // Reference to 'users' collection
-        final userCollection = firestore.collection('users');
-
-        // Reference to the document with UID
-        final userDocument = userCollection.doc(user.uid);
-
-        // Check if the document exists
-        final documentSnapshot = await userDocument.get();
-        if (!documentSnapshot.exists) {
-          // Create the document with UID
-          await userDocument.set({
-            'email': user.email,
-            'displayName': user.displayName,
-            'photoURL': user.photoURL,
-            // Add more user details as needed
-          });
+        // Check if email is verified
+        User? user = FirebaseAuth.instance.currentUser;
+        if (user != null && user.emailVerified) {
+          // Email is verified, navigate to the home screen
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+        } else {
+          // Email is not verified, show error message
+          ShowErrorMassage("Email not verified.");
         }
       }
     } catch (e) {
+      Navigator.pop(context);
       showErrorMessage(context, e.toString());
     }
   }
@@ -166,15 +190,30 @@ class _LoginPageState extends State<LoginPage> {
                 MyPasswordTextField(
                   controller: PasswordController,
                   hinttext: "Your Password",
-                  obscuretext: true,
                 ),
 
-                //forget passsword
+                // Checkbox for admin login and Forget Password?
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            checkColor: Colors.black,
+                            activeColor: const Color(0xffEC6408),
+                            value: isAdmin,
+                            onChanged: (value) {
+                              setState(() {
+                                isAdmin = value!;
+                              });
+                            },
+                          ),
+                          const Text('Login as Admin',
+                              style: TextStyle(fontSize: 13)),
+                        ],
+                      ),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
@@ -183,10 +222,10 @@ class _LoginPageState extends State<LoginPage> {
                           }));
                         },
                         child: Text(
-                          'Foreget Password?',
+                          'Forget Password?',
                           style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
                               color: const Color(0xffEC6408)),
                         ),
                       )

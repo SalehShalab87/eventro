@@ -1,7 +1,9 @@
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/Onboarding_pages.dart';
+import 'package:eventro/pages/admin/admin_dashborad.dart';
 import 'package:eventro/pages/authpages/auth_page.dart';
+import 'package:eventro/pages/authpages/email_verfication.dart';
 import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,6 +34,8 @@ class Eventro extends StatelessWidget {
         'onboard': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginPage(),
         '/notifications': (context) => const NotificationPage(),
+        '/admin_dashboard': (context) => const AdminPage(),
+        '/verfication': (context) => const EmailVerfication(),
       },
     );
   }
@@ -80,5 +84,3 @@ void main() async {
     ),
   );
 }
-
-// to do admin page functionalty or an admin panle as time the judge of that :) 

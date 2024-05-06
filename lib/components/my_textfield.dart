@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_typing_uninitialized_variables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,25 +85,28 @@ class MyEmailTextField extends StatelessWidget {
 
 // Password Text Field
 
-class MyPasswordTextField extends StatelessWidget {
+class MyPasswordTextField extends StatefulWidget {
   const MyPasswordTextField({
     super.key,
     required this.controller,
     required this.hinttext,
-    required this.obscuretext,
   });
 
-  //variables used in this class
-
-  final controller;
+  final TextEditingController controller;
   final String hinttext;
-  final bool obscuretext;
+
+  @override
+  _MyPasswordTextFieldState createState() => _MyPasswordTextFieldState();
+}
+
+class _MyPasswordTextFieldState extends State<MyPasswordTextField> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
@@ -111,38 +114,57 @@ class MyPasswordTextField extends StatelessWidget {
       ),
       child: TextField(
         cursorColor: const Color(0xffEC6408),
-        controller: controller,
-        obscureText: obscuretext,
+        controller: widget.controller,
+        obscureText: _obscureText,
         decoration: InputDecoration(
-          hintText: hinttext,
-          hintStyle: TextStyle(color: Colors.grey[600]),
+          hintText: widget.hinttext,
+          hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
+          suffixIcon: IconButton(
+            alignment: Alignment.centerRight,
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-// conform Password Text Field
-class MyConfirmPasswordTextField extends StatelessWidget {
+// Confirm Password Text Field
+
+class MyConfirmPasswordTextField extends StatefulWidget {
   const MyConfirmPasswordTextField({
     super.key,
     required this.controller,
     required this.hinttext,
-    required this.obscuretext,
   });
 
-  //variables used in this class
-
-  final controller;
+  final TextEditingController controller;
   final String hinttext;
-  final bool obscuretext;
+
+  @override
+  _MyConfirmPasswordTextFieldState createState() =>
+      _MyConfirmPasswordTextFieldState();
+}
+
+class _MyConfirmPasswordTextFieldState
+    extends State<MyConfirmPasswordTextField> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(20),
@@ -150,12 +172,24 @@ class MyConfirmPasswordTextField extends StatelessWidget {
       ),
       child: TextField(
         cursorColor: const Color(0xffEC6408),
-        controller: controller,
-        obscureText: obscuretext,
+        controller: widget.controller,
+        obscureText: _obscureText,
         decoration: InputDecoration(
-          hintText: hinttext,
+          hintText: widget.hinttext,
           hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
+          suffixIcon: IconButton(
+            alignment: Alignment.centerRight,
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
         ),
       ),
     );

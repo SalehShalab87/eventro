@@ -4,6 +4,7 @@ import 'package:eventro/Services/auth/facebook_signin.dart';
 import 'package:eventro/Services/auth/google_signin.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
+import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/components/square_tile.dart';
 import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,69 +72,29 @@ class _RegisterPageState extends State<RegitserPage> {
         // Pop the loading circle
         Navigator.pop(context);
 
-        // Show message prompting the user to verify their email
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text("Signup Successful"),
-              content: Text(
-                "An email verification link has been sent to ${_emailController.text}. Please verify your email before logging in.",
-              ),
-              actions: [
-                MyButton(onTap: () => Navigator.of(context).pop(), text: 'OK')
-              ],
-            );
-          },
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/verfication',
+          (_) => false,
+          arguments: _emailController.text,
         );
       } else {
         // Pop the loading circle
         Navigator.pop(context);
-        ShowErrorMassage("Password does not match!");
+        showErrorMessage(context, "Password does not match!");
       }
     } catch (e) {
       // Pop the loading circle
       Navigator.pop(context);
 
       // Show an error message
-      ShowErrorMassage(e.toString());
+      showErrorMessage(context, e.toString());
     }
   }
 
   bool PasswordConfirmed() {
     return _passwordController.text.trim() ==
         _confirmedPasswordController.text.trim();
-  }
-
-  // Show error message method
-  void ShowErrorMassage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: [
-            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-          ],
-        );
-      },
-    );
-  }
-
-  // Show Wrong Email Or Password Method
-  void ShowErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(message),
-          actions: [
-            MyButton(onTap: () => Navigator.pop(context), text: 'OK'),
-          ],
-        );
-      },
-    );
   }
 
   // Upload user information to Cloud Firestore
@@ -204,14 +165,12 @@ class _RegisterPageState extends State<RegitserPage> {
                 MyPasswordTextField(
                   controller: _passwordController,
                   hinttext: "Your Password",
-                  obscuretext: true,
                 ),
 
                 // Confirm password textfield
                 MyConfirmPasswordTextField(
                   controller: _confirmedPasswordController,
                   hinttext: "Confirm Your Password",
-                  obscuretext: true,
                 ),
 
                 const SizedBox(
