@@ -4,7 +4,6 @@ import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 //this is the forget password page after tap on "forget password"
 
@@ -74,21 +73,24 @@ class _ForgetMyPasswordPageState extends State<ForgetMyPasswordPage> {
     return Scaffold(
         appBar: AppBar(),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            Image.asset(
+              'images/password.png',
+              height: 300,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
               child: Text(
                 'Please enter your email address to request a password reset',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontFamily: 'Gilroy', fontSize: 16),
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 30,
             ),
             //Email textfield
             MyEmailTextField(
@@ -97,7 +99,7 @@ class _ForgetMyPasswordPageState extends State<ForgetMyPasswordPage> {
               obscuretext: false,
             ),
             const SizedBox(
-              height: 15,
+              height: 30,
             ),
             MyButton(
               text: 'Send',
