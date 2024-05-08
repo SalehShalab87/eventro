@@ -341,8 +341,8 @@ class Booking extends ChangeNotifier {
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       // Handle errors gracefully by displaying an error message using showErrorMessage
-      showErrorMessage(
-          context, 'An error occurred while checking event booking status: $e');
+      ShowErrorMessage(
+          message: 'An error occurred while checking event booking status: $e');
       return false;
     }
   }
@@ -386,8 +386,8 @@ class Booking extends ChangeNotifier {
       return true;
     } catch (e) {
       // Handle errors gracefully by displaying an error message using showErrorMessage
-      showErrorMessage(
-          context, 'An error occurred while canceling event booking: $e');
+      ShowErrorMessage(
+          message: 'An error occurred while canceling event booking: $e');
       return false;
     }
   }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Event {
   final String eventId;
   final String imageUrl;
@@ -40,4 +42,21 @@ class Event {
       'status': approvalStatus,
     };
   }
+
+  factory Event.fromSnapshot(DocumentSnapshot snapshot) {
+  Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+  return Event(
+    eventId: snapshot.id,
+    imageUrl: data['imageUrl'],
+    location: data['location'] ?? '',
+    title: data['title'],
+    dateTime: data['dateTime'] != null ? (data['dateTime'] as Timestamp).toDate() : null,
+    price: data['price'] ?? '',
+    description: data['description'] ?? '',
+    eventType: data['eventType'] ?? '',
+    maxCapacity: data['maxCapacity'] ?? 0, // Provide a default value if it's not available
+    currentAttendees: data['currentAttendees'] ?? 0, // Provide a default value if it's not available
+    approvalStatus: data['status'] ?? '',
+  );
+}
 }

@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       // Error retrieving admin credentials
-      showErrorMessage(context, e.toString());
+      ShowErrorMessage(message: e.toString());
       return {};
     }
   }
@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      showErrorMessage(context, e.toString());
+      ShowErrorMessage(message: e.toString());
     }
   }
 

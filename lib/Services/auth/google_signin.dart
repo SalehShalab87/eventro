@@ -40,10 +40,11 @@ class GoogleServices {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        showErrorMessage(context, "Google Sign-In failed. User not found.");
+        const ShowErrorMessage(
+            message: "Google Sign-In failed. User not found.");
       }
     } catch (e) {
-      showErrorMessage(context, e.toString());
+      ShowErrorMessage(message: e.toString());
     }
   }
 
@@ -62,7 +63,7 @@ class GoogleServices {
         });
       }
     } catch (e) {
-      showErrorMessage(context, e.toString());
+      ShowErrorMessage(message: e.toString());
     }
   }
 }

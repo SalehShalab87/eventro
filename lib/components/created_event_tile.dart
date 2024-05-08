@@ -30,7 +30,6 @@ class CreatedEventTile extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: ListTile(
           leading: imageUrl.isNotEmpty
               ? CircleAvatar(

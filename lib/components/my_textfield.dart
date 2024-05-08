@@ -248,6 +248,7 @@ class InputFiled extends StatelessWidget {
   final String hintText;
   final List<TextInputFormatter>? inputFormatter;
   final TextInputType type;
+  final FormFieldValidator<String>? validator; // Add validator
 
   const InputFiled({
     super.key,
@@ -255,6 +256,7 @@ class InputFiled extends StatelessWidget {
     required this.hintText,
     this.inputFormatter,
     required this.type,
+    required this.validator, // Receive validator
   });
 
   @override
@@ -269,7 +271,8 @@ class InputFiled extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.grey),
       ),
-      child: TextField(
+      child: TextFormField(
+        // Change TextField to TextFormField
         keyboardType: type,
         cursorColor: const Color(0xffEC6408),
         controller: controller,
@@ -278,6 +281,7 @@ class InputFiled extends StatelessWidget {
           hintStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
+        validator: validator, // Set validator
       ),
     );
   }

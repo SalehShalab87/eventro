@@ -110,7 +110,7 @@ class _AdminPageState extends State<AdminPage> {
       }
     } catch (e) {
       String errorMessage = "Failed to sign out admin.";
-      showErrorMessage(context, errorMessage);
+      ShowErrorMessage(message: errorMessage);
     }
   }
 

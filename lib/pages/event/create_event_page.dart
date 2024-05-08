@@ -60,62 +60,62 @@ class _CreateEventPageState extends State<CreateEventPage> {
     });
   }
 
-  Future<void> _uploadEventToFirestore() async {
-    if (_image != null) {
-      try {
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('event_images')
-            .child(DateTime.now().toString());
-        await ref.putFile(_image!);
-        final imageUrl = await ref.getDownloadURL();
+  Future<void> _uploadEventToFirestore(BuildContext context) async {
+    // Validate form fields
+    if (!_validateForm()) {
+      return;
+    }
 
-        // Create a map with the event data
-        final eventData = {
-          'imageUrl': imageUrl,
-          'location': _locationController.text,
-          'title': _titleController.text,
-          'price': 'Free', // Assuming price is always free
-          'description': _descriptionController.text,
-          'datetime': DateTime.parse(_dateTimeController.text),
-          'eventType': _eventTypeController.text,
-          'maxCapacity': int.parse(_maxcapacityController.text),
-          'currentAttendees': 0,
-          'status': 'pending', // Set approval status to pending
-        };
-
-        // Upload the event to Firestore
-        final docRef = await FirebaseFirestore.instance
-            .collection('eventsCollection')
-            .add(eventData);
-
-        // Assign the event to the current user
-        await _assignEventToCurrentUser(docRef.id);
-
-        // Now you can do something with the event, like display a success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              "Event sent to admin we will notify you with it's status",
-              style: TextStyle(color: Colors.white),
-            ),
+    // Show circular progress indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dialog from closing
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xffEC6408),
           ),
         );
-      } catch (e) {
-        // Error handling
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(
-              "Error uploading event: $e",
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
+      },
+    );
+
+    try {
+      bool? confirm = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Event Upload'),
+          content: const Text('Are you sure you want to upload this event?'),
+          actions: [
+            MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
+            const SizedBox(height: 10),
+            MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
+          ],
+        ),
+      );
+
+      if (confirm != null && confirm) {
+        // Perform the upload if confirmed
+        await _uploadEvent(context);
       }
-    } else {
-      // Handle case when image is not selected
+    } catch (e) {
+      // Error handling
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Error uploading event: $e",
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    } finally {
+      // Close the progress indicator
+      Navigator.pop(context);
+    }
+  }
+
+  bool _validateForm() {
+    if (_image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.red,
@@ -125,7 +125,93 @@ class _CreateEventPageState extends State<CreateEventPage> {
           ),
         ),
       );
+      return false;
     }
+    if (_titleController.text.isEmpty ||
+        _locationController.text.isEmpty ||
+        _maxcapacityController.text.isEmpty ||
+        _eventTypeController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Please fill out all required fields",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _uploadEvent(BuildContext context) async {
+    // Perform the actual upload to Firebase Firestore
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('event_images')
+        .child(DateTime.now().toString());
+    await ref.putFile(_image!);
+    final imageUrl = await ref.getDownloadURL();
+
+    // Convert user input date/time to a Timestamp object
+    final selectedDateTime = DateTime.parse(_dateTimeController.text);
+    final timestamp = Timestamp.fromDate(selectedDateTime);
+
+    // Check if the event already exists
+    final existingEvents = await FirebaseFirestore.instance
+        .collection('eventsCollection')
+        .where('title', isEqualTo: _titleController.text)
+        .where('location', isEqualTo: _locationController.text)
+        .where('datetime', isEqualTo: timestamp)
+        .get();
+
+    if (existingEvents.docs.isNotEmpty) {
+      // Display error message if event already exists
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "An event with the same title, location, and date/time already exists",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+      return; // Exit function without creating a new event
+    }
+
+    // Create a map with the event data
+    final eventData = {
+      'imageUrl': imageUrl,
+      'location': _locationController.text,
+      'title': _titleController.text,
+      'price': 'Free', // Assuming price is always free
+      'description': _descriptionController.text,
+      'datetime': DateTime.parse(_dateTimeController.text),
+      'eventType': _eventTypeController.text,
+      'maxCapacity': int.parse(_maxcapacityController.text),
+      'currentAttendees': 0,
+      'status': 'pending', // Set approval status to pending
+    };
+
+    // Upload the event to Firestore
+    final docRef = await FirebaseFirestore.instance
+        .collection('eventsCollection')
+        .add(eventData);
+
+    // Assign the event to the current user
+    await _assignEventToCurrentUser(docRef.id);
+
+    // Display success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.green,
+        content: Text(
+          "Event sent to admin we will notify you with it's status",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
   }
 
   Future<void> _assignEventToCurrentUser(String eventId) async {
@@ -264,6 +350,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
               //title
               InputFiled(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event title';
+                  }
+                  return null;
+                },
                 controller: _titleController,
                 hintText: 'Event Title',
                 type: TextInputType.text,
@@ -271,6 +363,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
               //event type
               InputFiled(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event title';
+                  }
+                  return null;
+                },
                 controller: _eventTypeController,
                 hintText: 'Event Type',
                 type: TextInputType.text,
@@ -293,6 +391,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
               //location
               InputFiled(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event title';
+                  }
+                  return null;
+                },
                 controller: _locationController,
                 hintText: 'Location',
                 type: TextInputType.text,
@@ -300,6 +404,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
               //max capacity
               InputFiled(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event title';
+                  }
+                  return null;
+                },
                 controller: _maxcapacityController,
                 hintText: 'Max Capacity',
                 inputFormatter: <TextInputFormatter>[
@@ -310,6 +420,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
               //description
               InputFiled(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event title';
+                  }
+                  return null;
+                },
                 controller: _descriptionController,
                 hintText: 'Description',
                 type: TextInputType.multiline,
@@ -320,7 +436,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
 
               // Save Button
-              MyButton(onTap: _uploadEventToFirestore, text: 'Save')
+              MyButton(
+                  onTap: () => _uploadEventToFirestore(context), text: 'Save')
             ],
           ),
         ),
