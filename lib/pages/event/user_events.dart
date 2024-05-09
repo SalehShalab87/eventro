@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:eventro/components/booked_events_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/created_event_tile.dart';
 import 'package:eventro/components/my_button.dart';
@@ -159,8 +160,7 @@ class MyEvents extends StatelessWidget {
                                       icon: Icons.delete_outline,
                                       imageUrl: eventData['imageUrl'] ?? '',
                                       eventName: eventData['title'] ?? '',
-                                      currentAttendees:
-                                          eventData['currentAttendees'] ?? 0,
+                                      status: eventData['status'] ?? '',
                                       onDelete: () {
                                         deleteEvent(
                                             context, eventSnapshot.data!.id);
@@ -236,7 +236,7 @@ class MyEvents extends StatelessWidget {
                                   }
                                   final eventData = eventSnapshot.data!.data()
                                       as Map<String, dynamic>;
-                                  return CreatedEventTile(
+                                  return BookedEventsTile(
                                     icon: Icons.delete_outline,
                                     imageUrl: eventData['imageUrl'] ?? '',
                                     eventName: eventData['title'] ?? '',

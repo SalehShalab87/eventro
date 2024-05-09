@@ -9,43 +9,69 @@ class FavoritePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Consumer widget to listen to changes in the Booking model
     return Consumer<Booking>(
-      builder: (context, value, child) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'My Favorites',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          ),
-        ),
-        // Body of the Favorite Page
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
+      builder: (context, value, child) {
+        // Check if the list of favorite events is empty
+        if (value.getUserFavoriteEvents().isEmpty) {
+          // Show a message widget if the list is empty
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                'My Favorites',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
-              // Expanded ListView to display favorite events
-              Expanded(
-                child: ListView.builder(
-                  itemCount: value.getUserFavoriteEvents().length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // Get individual event from the list of favorites
-                    Event individualEvent =
-                        value.getUserFavoriteEvents()[index];
-                    // Return the FavoriteEvents widget for each event
-                    return FavoriteEvents(
-                      event: individualEvent,
-                    );
-                  },
+            ),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('images/favorite.png', height: 300),
+                    const SizedBox(height: 40),
+                    const Text(
+                      'You have no favorite events.',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          // Show the list of favorite events if it's not empty
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                'My Favorites',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: value.getUserFavoriteEvents().length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Event individualEvent =
+                            value.getUserFavoriteEvents()[index];
+                        return FavoriteEvents(
+                          event: individualEvent,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

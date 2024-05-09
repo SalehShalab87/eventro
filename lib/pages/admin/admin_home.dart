@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eventro/components/created_event_tile.dart';
+import 'package:eventro/components/booked_events_tile.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/models/event.dart';
@@ -214,7 +214,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 }
                 return Column(
                   children: snapshot.data!.map((event) {
-                    return CreatedEventTile(
+                    return BookedEventsTile(
                       imageUrl: event.imageUrl,
                       eventName: event.title,
                       currentAttendees: event.currentAttendees,

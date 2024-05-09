@@ -1,19 +1,19 @@
 import 'package:eventro/pages/event/event_details.dart';
 import 'package:flutter/material.dart';
 
-class CreatedEventTile extends StatelessWidget {
+class BookedEventsTile extends StatelessWidget {
   final String imageUrl;
   final String eventName;
   final String eventID;
-  final String status;
+  final int currentAttendees;
   final VoidCallback onDelete;
   final IconData icon;
 
-  const CreatedEventTile({
+  const BookedEventsTile({
     super.key,
     required this.imageUrl,
     required this.eventName,
-    required this.status,
+    required this.currentAttendees,
     required this.onDelete,
     required this.eventID,
     required this.icon,
@@ -40,7 +40,7 @@ class CreatedEventTile extends StatelessWidget {
                 )
               : const Placeholder(), // Placeholder for image if imageUrl is empty
           title: Text(eventName),
-          subtitle: Text('Status: $status'),
+          subtitle: Text('Current Attendees: $currentAttendees'),
           trailing: Container(
             decoration: const BoxDecoration(
                 color: Color(0xffEC6408),
