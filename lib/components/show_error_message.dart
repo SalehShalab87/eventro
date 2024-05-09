@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ShowErrorMessage extends StatelessWidget {
-  final String message;
+class ShowErrorMessage {
+  static final ShowErrorMessage _instance = ShowErrorMessage._internal();
 
-  const ShowErrorMessage({super.key, required this.message});
+  factory ShowErrorMessage() {
+    return _instance;
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.red,
-      duration: const Duration(seconds: 5),
+  ShowErrorMessage._internal();
+
+  static void showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+      ),
     );
   }
 }

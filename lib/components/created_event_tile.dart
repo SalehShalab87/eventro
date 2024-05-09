@@ -7,6 +7,7 @@ class CreatedEventTile extends StatelessWidget {
   final String eventID;
   final int currentAttendees;
   final VoidCallback onDelete;
+  final IconData icon;
 
   const CreatedEventTile({
     super.key,
@@ -15,6 +16,7 @@ class CreatedEventTile extends StatelessWidget {
     required this.currentAttendees,
     required this.onDelete,
     required this.eventID,
+    required this.icon,
   });
 
   @override
@@ -47,8 +49,8 @@ class CreatedEventTile extends StatelessWidget {
                     bottomRight: Radius.circular(12))),
             child: IconButton(
               onPressed: onDelete,
-              icon: const Icon(
-                Icons.delete_outline_rounded,
+              icon: Icon(
+                icon,
                 color: Colors.black,
               ),
             ),

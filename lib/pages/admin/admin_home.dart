@@ -5,6 +5,7 @@ import 'package:eventro/components/created_event_tile.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/models/event.dart';
+import 'package:eventro/pages/admin/PendingEventsPage.dart';
 import 'package:eventro/pages/admin/components/count_card.dart';
 import 'package:flutter/material.dart';
 
@@ -100,7 +101,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         );
       }
     } catch (e) {
-      const ShowErrorMessage(message: 'Unknown Error.... try again!');
+      ShowErrorMessage.showError(context, 'Unknown Error.... try again!');
       // Handle errors gracefully, such as showing an error message.
     }
   }
@@ -122,8 +123,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   stream: userCountStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator(
-                        color: Color(0xffEC6408),
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xffEC6408),
+                        ),
                       );
                     }
                     return AdminCountCard(
@@ -136,8 +139,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   stream: eventCountStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator(
-                        color: Color(0xffEC6408),
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xffEC6408),
+                        ),
                       );
                     }
                     return AdminCountCard(
@@ -150,13 +155,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   stream: pendingEventCountStream,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator(
-                        color: Color(0xffEC6408),
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xffEC6408),
+                        ),
                       );
                     }
-                    return AdminCountCard(
-                      count: snapshot.data ?? 0,
-                      title: 'Pending Events',
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PendingEventsPage())),
+                      child: AdminCountCard(
+                        count: snapshot.data ?? 0,
+                        title: 'Pending Events',
+                      ),
                     );
                   },
                 ),
@@ -192,8 +205,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
               stream: topEventStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(
-                      color: Color(0xffEC6408));
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xffEC6408)),
+                  );
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Text('No top events available.');
@@ -208,6 +222,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         deleteEvent(context, event.eventId);
                       },
                       eventID: event.eventId,
+                      icon: Icons.delete_outline_outlined,
                     );
                   }).toList(),
                 );

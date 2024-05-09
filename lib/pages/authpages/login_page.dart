@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       // Error retrieving admin credentials
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
       return {};
     }
   }
@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMassage("Email Or Password Is Incorrect!");
     }
   }
 

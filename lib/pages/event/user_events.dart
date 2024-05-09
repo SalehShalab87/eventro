@@ -51,7 +51,7 @@ class MyEvents extends StatelessWidget {
         );
       }
     } catch (e) {
-      const ShowErrorMessage(message: 'Unknown Error.... try again!');
+      ShowErrorMessage.showError(context, 'Unknown Error.... try again!');
       // Handle errors gracefully, such as showing an error message.
     }
   }
@@ -85,7 +85,7 @@ class MyEvents extends StatelessWidget {
         }
       }
     } catch (e) {
-      const ShowErrorMessage(message: 'Unknown Error.... try again!');
+      ShowErrorMessage.showError(context, 'Unknown Error.... try again!');
     }
   }
 
@@ -156,6 +156,7 @@ class MyEvents extends StatelessWidget {
                                         as Map<String, dynamic>;
 
                                     return CreatedEventTile(
+                                      icon: Icons.delete_outline,
                                       imageUrl: eventData['imageUrl'] ?? '',
                                       eventName: eventData['title'] ?? '',
                                       currentAttendees:
@@ -236,6 +237,7 @@ class MyEvents extends StatelessWidget {
                                   final eventData = eventSnapshot.data!.data()
                                       as Map<String, dynamic>;
                                   return CreatedEventTile(
+                                    icon: Icons.delete_outline,
                                     imageUrl: eventData['imageUrl'] ?? '',
                                     eventName: eventData['title'] ?? '',
                                     currentAttendees:

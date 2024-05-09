@@ -38,13 +38,13 @@ class GoogleServices {
       }
 
       if (FirebaseAuth.instance.currentUser != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
       } else {
-        const ShowErrorMessage(
-            message: "Google Sign-In failed. User not found.");
+        ShowErrorMessage.showError(
+            context, "Google Sign-In failed. User not found.");
       }
     } catch (e) {
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 
@@ -63,7 +63,7 @@ class GoogleServices {
         });
       }
     } catch (e) {
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 }

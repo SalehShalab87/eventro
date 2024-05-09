@@ -24,7 +24,7 @@ class EmailVerfication extends StatelessWidget {
         },
       );
     } catch (e) {
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 

@@ -19,7 +19,7 @@ Future<void> signOutFromFirebase(BuildContext context) async {
     if (e is FirebaseAuthException) {
       errorMessage = e.message ?? errorMessage;
     }
-    ShowErrorMessage(message: errorMessage);
+    ShowErrorMessage.showError(context, errorMessage);
   }
 }
 

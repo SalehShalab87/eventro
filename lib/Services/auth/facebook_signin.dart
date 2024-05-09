@@ -37,17 +37,17 @@ class FacebookServices {
         Navigator.pop(context);
 
         if (FirebaseAuth.instance.currentUser != null) {
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
         } else {
-          const ShowErrorMessage(
-              message: "Facebook Sign-In failed. User not found.");
+          ShowErrorMessage.showError(
+              context, "Facebook Sign-In failed. User not found.");
         }
       } else {
-        const ShowErrorMessage(
-            message: "Facebook Sign-In failed. Access token is null.");
+        ShowErrorMessage.showError(
+            context, "Facebook Sign-In failed. Access token is null.");
       }
     } catch (e) {
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 
@@ -66,7 +66,7 @@ class FacebookServices {
         });
       }
     } catch (e) {
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 }

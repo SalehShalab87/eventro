@@ -81,14 +81,14 @@ class _RegisterPageState extends State<RegitserPage> {
       } else {
         // Pop the loading circle
         Navigator.pop(context);
-        const ShowErrorMessage(message: "Password does not match!");
+        ShowErrorMessage.showError(context, "Password does not match!");
       }
     } catch (e) {
       // Pop the loading circle
       Navigator.pop(context);
 
       // Show an error message
-      ShowErrorMessage(message: e.toString());
+      ShowErrorMessage.showError(context, e.toString());
     }
   }
 
