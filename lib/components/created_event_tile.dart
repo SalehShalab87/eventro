@@ -6,18 +6,19 @@ class CreatedEventTile extends StatelessWidget {
   final String eventName;
   final String eventID;
   final String status;
+  final String rejectionReason;
   final VoidCallback onDelete;
   final IconData icon;
 
-  const CreatedEventTile({
-    super.key,
-    required this.imageUrl,
-    required this.eventName,
-    required this.status,
-    required this.onDelete,
-    required this.eventID,
-    required this.icon,
-  });
+  const CreatedEventTile(
+      {super.key,
+      required this.imageUrl,
+      required this.eventName,
+      required this.status,
+      required this.onDelete,
+      required this.eventID,
+      required this.icon,
+      this.rejectionReason = ''});
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +41,27 @@ class CreatedEventTile extends StatelessWidget {
                 )
               : const Placeholder(), // Placeholder for image if imageUrl is empty
           title: Text(eventName),
-          subtitle: Text('Status: $status'),
+          subtitle: status == 'rejected'
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Status: $status'),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Rejection Reason: $rejectionReason',
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ],
+                )
+              : Text('Status: $status'),
           trailing: Container(
             decoration: const BoxDecoration(
-                color: Color(0xffEC6408),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12))),
+              color: Color(0xffEC6408),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+            ),
             child: IconButton(
               onPressed: onDelete,
               icon: Icon(

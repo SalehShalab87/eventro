@@ -140,7 +140,7 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
           actions: [
             MyButton(
                 onTap: () {
-                  _updateEventStatus(event, 'approved');
+                  _updateEventStatus(event, 'approved', '');
                   Navigator.pop(context);
                 },
                 text: 'Yes'),
@@ -153,31 +153,81 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
   }
 
   void _rejectEvent(Event event) {
+    String rejectionReason = '';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Reject Event"),
-          content: const Text("Are you sure you want to reject this event?"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Are you sure you want to reject this event?"),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  vertical: 10,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: TextFormField(
+                  cursorColor: const Color(0xffEC6408),
+                  decoration: const InputDecoration(
+                    hintText: 'Reason for rejection',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) {
+                    rejectionReason =
+                        value; // Save the reason entered by the admin
+                  },
+                ),
+              ),
+            ],
+          ),
           actions: [
             MyButton(
-                onTap: () {
-                  _updateEventStatus(event, 'rejected');
+              onTap: () {
+                if (rejectionReason.isNotEmpty) {
+                  _updateEventStatus(event, 'rejected', rejectionReason);
                   Navigator.pop(context);
-                },
-                text: 'Yes'),
+                } else {
+                  // Show error message if rejection reason is empty
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                        'Please enter a reason for rejection.',
+                      ),
+                    ),
+                  );
+                }
+              },
+              text: 'Yes',
+            ),
             const SizedBox(height: 10),
-            MyButton(onTap: () => Navigator.pop(context), text: 'No'),
+            MyButton(
+              onTap: () => Navigator.pop(context),
+              text: 'No',
+            ),
           ],
         );
       },
     );
   }
 
-  void _updateEventStatus(Event event, String status) {
+  void _updateEventStatus(Event event, String status, String rejectionReason) {
     FirebaseFirestore.instance
         .collection('eventsCollection')
         .doc(event.eventId)
-        .update({'status': status});
+        .update({
+      'status': status,
+      'rejectionReason':
+          rejectionReason, // Save the rejection reason in Firestore
+    });
   }
 }

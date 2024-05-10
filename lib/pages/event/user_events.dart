@@ -161,6 +161,8 @@ class MyEvents extends StatelessWidget {
                                       imageUrl: eventData['imageUrl'] ?? '',
                                       eventName: eventData['title'] ?? '',
                                       status: eventData['status'] ?? '',
+                                      rejectionReason:
+                                          eventData['rejectionReason'] ?? '',
                                       onDelete: () {
                                         deleteEvent(
                                             context, eventSnapshot.data!.id);
@@ -237,7 +239,7 @@ class MyEvents extends StatelessWidget {
                                   final eventData = eventSnapshot.data!.data()
                                       as Map<String, dynamic>;
                                   return BookedEventsTile(
-                                    icon: Icons.delete_outline,
+                                    icon: Icons.close,
                                     imageUrl: eventData['imageUrl'] ?? '',
                                     eventName: eventData['title'] ?? '',
                                     currentAttendees:
