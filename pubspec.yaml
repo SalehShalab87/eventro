@@ -55,6 +55,7 @@ dependencies:
   line_awesome_flutter: ^2.0.0
   url_launcher: ^6.2.5
   dropdown_button2: ^2.3.9
+  table_calendar: ^3.1.1
 
 
 dev_dependencies:

@@ -39,7 +39,6 @@ class _UsersPageState extends State<UsersPage> {
                 ),
                 title: Text(user.name),
                 subtitle: Text(user.email),
-                onTap: () {},
               );
             },
           );

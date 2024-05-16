@@ -35,7 +35,7 @@ class Eventro extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/notifications': (context) => const NotificationPage(),
         '/admin_dashboard': (context) => const AdminPage(),
-        '/verfication': (context) => const EmailVerfication(),
+        '/verfication': (context) => const EmailVerification(),
       },
     );
   }
