@@ -168,26 +168,32 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
       );
       if (confirm != null && confirm) {
         // Delete the event from the events collection
-        await _firestore.collection('eventsCollection').doc(eventId).delete();
+        await FirebaseFirestore.instance
+            .collection('eventsCollection')
+            .doc(eventId)
+            .delete();
 
         // Create a reference to the event document
         DocumentReference eventRef = FirebaseFirestore.instance
             .collection('eventsCollection')
             .doc(eventId);
-        // Remove the event reference from users' collection
+
+        // Remove the event reference from users' collections
         QuerySnapshot<Map<String, dynamic>> usersSnapshot =
-            await _firestore.collection('users').get();
-        usersSnapshot.docs.forEach((userDoc) async {
+            await FirebaseFirestore.instance.collection('users').get();
+        for (var userDoc in usersSnapshot.docs) {
           if (userDoc.data().containsKey('events')) {
             List<dynamic> eventsArray = userDoc['events'];
-            String eventPath = 'eventsCollection/$eventId';
-            if (eventsArray.contains(eventPath)) {
-              await _firestore.collection('users').doc(userDoc.id).update({
-                'events': FieldValue.arrayRemove([eventPath])
+            if (eventsArray.contains(eventRef)) {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userDoc.id)
+                  .update({
+                'events': FieldValue.arrayRemove([eventRef])
               });
             }
           }
-        });
+        }
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

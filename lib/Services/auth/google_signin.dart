@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/components/show_loadingcircle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,33 +19,37 @@ class GoogleServices {
         accessToken: gAuth.accessToken,
         idToken: gAuth.idToken,
       );
+      if (context.mounted) {
+        showLoadingCircle(context);
+      }
 
-      showLoadingCircle(context);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = userCredential.user;
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final name = user.displayName ?? 'null';
         final email = user.providerData[0].email ?? 'null';
         final profilePictureUrl = user.photoURL ?? 'null';
 
         await saveUserDetailsToFirestore(
-            context, name, user.uid, email, profilePictureUrl);
-      }
+            name, user.uid, email, profilePictureUrl);
 
-      if (FirebaseAuth.instance.currentUser != null) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
-      } else {
-        showError(context, "Google Sign-In failed. User not found.");
+        if (FirebaseAuth.instance.currentUser != null && context.mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+        } else if (context.mounted) {
+          showError(context, "Google Sign-In failed. User not found.");
+        }
       }
     } catch (e) {
-      showError(context, e.toString());
+      if (context.mounted) {
+        showError(context, e.toString());
+      }
     }
   }
 
-  Future<void> saveUserDetailsToFirestore(BuildContext context, String name,
-      String uid, String email, String profilePictureUrl) async {
+  Future<void> saveUserDetailsToFirestore(
+      String name, String uid, String email, String profilePictureUrl) async {
     try {
       final firestore = FirebaseFirestore.instance;
       final userCollection = firestore.collection('users');
@@ -61,17 +63,20 @@ class GoogleServices {
         });
       }
     } catch (e) {
-      showError(context, e.toString());
+      // Handle error, no need for context here since it's Firestore operation
+      print("Error saving user details to Firestore: $e");
     }
   }
 
   void showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
   }
 }
