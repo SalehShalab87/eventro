@@ -140,200 +140,207 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                //logo
-                Image.asset(
-                  'images/slogo.png',
-                  height: 150,
-                  width: 150,
-                ),
+      body: GestureDetector(
+        onTap: () {
+          // Remove focus from text fields when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  //logo
+                  Image.asset(
+                    'images/slogo.png',
+                    height: 150,
+                    width: 150,
+                  ),
 
-                const SizedBox(
-                  height: 30,
-                ),
+                  const SizedBox(
+                    height: 30,
+                  ),
 
-                //Sign in text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
+                  //Sign in text
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Sign in',
+                          style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  //Email textfield
+                  MyEmailTextField(
+                    controller: EmailController,
+                    hintText: 'abc@email.com',
+                    obscuretext: false,
+                  ),
+
+                  //password textfield
+                  MyPasswordTextField(
+                    controller: PasswordController,
+                    hinttext: "Your Password",
+                  ),
+
+                  // Checkbox for admin login and Forget Password?
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              checkColor: Colors.black,
+                              activeColor: const Color(0xffEC6408),
+                              value: isAdmin,
+                              onChanged: (value) {
+                                setState(() {
+                                  isAdmin = value!;
+                                });
+                              },
+                            ),
+                            const Text('Login as Admin',
+                                style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return const ForgetMyPasswordPage();
+                            }));
+                          },
+                          child: Text(
+                            'Forget Password?',
+                            style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xffEC6408)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  //sgin button
+                  MyButton(
+                    text: 'Sign in',
+                    onTap: SignUserIn,
+                  ),
+
+                  const SizedBox(
+                    height: 40,
+                  ),
+
+                  //or continue with
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                          ),
+                        ),
+                        Text('Or Continue With',
+                            style: GoogleFonts.inter(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                                color: const Color(0xff9D9898))),
+                        const Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 40,
+                  ),
+
+                  //google + apple sgin in buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Sign in',
-                        style: GoogleFonts.inter(
-                            textStyle: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                      //google button
+                      SquareTile(
+                          onTap: () =>
+                              GoogleServices().signInWithGoogle(context),
+                          ImagePath: 'images/google.png'),
+
+                      const SizedBox(
+                        width: 10,
                       ),
+
+                      //facebook logo
+                      SquareTile(
+                          onTap: () =>
+                              FacebookServices().signInWithFacebook(context),
+                          ImagePath: 'images/facebook.png')
                     ],
                   ),
-                ),
 
-                const SizedBox(
-                  height: 10,
-                ),
+                  const SizedBox(
+                    height: 20,
+                  ),
 
-                //Email textfield
-                MyEmailTextField(
-                  controller: EmailController,
-                  hintText: 'abc@email.com',
-                  obscuretext: false,
-                ),
+                  //not a member registr now
 
-                //password textfield
-                MyPasswordTextField(
-                  controller: PasswordController,
-                  hinttext: "Your Password",
-                ),
-
-                // Checkbox for admin login and Forget Password?
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            checkColor: Colors.black,
-                            activeColor: const Color(0xffEC6408),
-                            value: isAdmin,
-                            onChanged: (value) {
-                              setState(() {
-                                isAdmin = value!;
-                              });
-                            },
-                          ),
-                          const Text('Login as Admin',
-                              style: TextStyle(fontSize: 13)),
-                        ],
+                      Text(
+                        'Don\'t have an account?',
+                        style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff9D9898)),
+                      ),
+                      const SizedBox(
+                        width: 4,
                       ),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return const ForgetMyPasswordPage();
+                            return const RegitserPage();
                           }));
                         },
                         child: Text(
-                          'Forget Password?',
+                          'Sign Up',
                           style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                               color: const Color(0xffEC6408)),
                         ),
                       )
                     ],
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                //sgin button
-                MyButton(
-                  text: 'Sign in',
-                  onTap: SignUserIn,
-                ),
-
-                const SizedBox(
-                  height: 40,
-                ),
-
-                //or continue with
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                        ),
-                      ),
-                      Text('Or Continue With',
-                          style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal,
-                              color: const Color(0xff9D9898))),
-                      const Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 40,
-                ),
-
-                //google + apple sgin in buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //google button
-                    SquareTile(
-                        onTap: () => GoogleServices().signInWithGoogle(context),
-                        ImagePath: 'images/google.png'),
-
-                    const SizedBox(
-                      width: 10,
-                    ),
-
-                    //facebook logo
-                    SquareTile(
-                        onTap: () =>
-                            FacebookServices().signInWithFacebook(context),
-                        ImagePath: 'images/facebook.png')
-                  ],
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                //not a member registr now
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Don\'t have an account?',
-                      style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xff9D9898)),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const RegitserPage();
-                        }));
-                      },
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xffEC6408)),
-                      ),
-                    )
-                  ],
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

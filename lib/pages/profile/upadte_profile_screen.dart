@@ -96,100 +96,106 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xffEC6408),
-                    width: 3.0,
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.black,
-                        backgroundImage: _pickedImage != null
-                            ? Image.file(_pickedImage!).image
-                            : NetworkImage(downloadURL ??
-                                currentUser.photoURL ??
-                                'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
-                        radius: 50,
-                      ),
+      body: GestureDetector(
+        onTap: () {
+          // Remove focus from text fields when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xffEC6408),
+                      width: 3.0,
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: const Color(0xffEC6408),
+                  ),
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.black,
+                          backgroundImage: _pickedImage != null
+                              ? Image.file(_pickedImage!).image
+                              : NetworkImage(downloadURL ??
+                                  currentUser.photoURL ??
+                                  'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'),
+                          radius: 50,
                         ),
-                        child: GestureDetector(
-                          onTap: _pickImage,
-                          child: const Icon(
-                            LineAwesomeIcons.alternate_pencil,
-                            color: Colors.black,
-                            size: 20.0,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: const Color(0xffEC6408),
+                          ),
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: const Icon(
+                              LineAwesomeIcons.alternate_pencil,
+                              color: Colors.black,
+                              size: 20.0,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    if (isLoading)
-                      Positioned.fill(
-                        child: Center(
-                          child: buildLoadingIndicator(),
+                      if (isLoading)
+                        Positioned.fill(
+                          child: Center(
+                            child: buildLoadingIndicator(),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                userName,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                userEmail,
-                style: const TextStyle(
-                  fontSize: 15,
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Divider(),
-              const SizedBox(height: 10),
-              MyNameTextField(
-                  controller: _nameController,
-                  hintText: currentUser.displayName!),
-              MyEmailTextField(
-                  controller: _emailController,
-                  hintText: userEmail,
-                  obscuretext: false),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  userEmail,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Divider(),
+                const SizedBox(height: 10),
+                MyNameTextField(
+                    controller: _nameController,
+                    hintText: currentUser.displayName!),
+                MyEmailTextField(
+                    controller: _emailController,
+                    hintText: userEmail,
+                    obscuretext: false),
 
-              const SizedBox(
-                height: 20,
-              ),
+                const SizedBox(
+                  height: 20,
+                ),
 
-              // Sign up button
-              MyButton(
-                text: 'Save',
-                onTap: () => SaveUserDetails(),
-              ),
-            ],
+                // Sign up button
+                MyButton(
+                  text: 'Save',
+                  onTap: () => SaveUserDetails(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

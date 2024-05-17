@@ -202,6 +202,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
     // Assign the event to the current user
     await _assignEventToCurrentUser(docRef.id);
 
+    _dateTimeController.clear();
+    _descriptionController.clear();
+    _eventTypeController.clear();
+    _locationController.clear();
+    _maxcapacityController.clear();
+    _titleController.clear();
+
     // Display success message
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -316,129 +323,135 @@ class _CreateEventPageState extends State<CreateEventPage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: getImage,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black),
+      body: GestureDetector(
+        onTap: () {
+          // Remove focus from text fields when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: getImage,
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: _image != null
+                        ? Image.file(
+                            _image!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(
+                            Icons.add_a_photo,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
                   ),
-                  child: _image != null
-                      ? Image.file(
-                          _image!,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(
-                          Icons.add_a_photo,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              //title
-              InputFiled(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
-                controller: _titleController,
-                hintText: 'Event Title',
-                type: TextInputType.text,
-              ),
+                //title
+                InputFiled(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an event title';
+                    }
+                    return null;
+                  },
+                  controller: _titleController,
+                  hintText: 'Event Title',
+                  type: TextInputType.text,
+                ),
 
-              //event type
-              InputFiled(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
-                controller: _eventTypeController,
-                hintText: 'Event Type',
-                type: TextInputType.text,
-              ),
+                //event type
+                InputFiled(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an event title';
+                    }
+                    return null;
+                  },
+                  controller: _eventTypeController,
+                  hintText: 'Event Type',
+                  type: TextInputType.text,
+                ),
 
-              //date time
-              DateTimeInput(
-                controller: _dateTimeController,
-                hintText: 'Date And Time',
-                icon: Icons.calendar_today,
-                onPressed: () async {
-                  final selectedDateTime = await _selectDateTime(context);
-                  if (selectedDateTime != null) {
-                    setState(() {
-                      _dateTimeController.text = selectedDateTime.toString();
-                    });
-                  }
-                },
-              ),
+                //date time
+                DateTimeInput(
+                  controller: _dateTimeController,
+                  hintText: 'Date And Time',
+                  icon: Icons.calendar_today,
+                  onPressed: () async {
+                    final selectedDateTime = await _selectDateTime(context);
+                    if (selectedDateTime != null) {
+                      setState(() {
+                        _dateTimeController.text = selectedDateTime.toString();
+                      });
+                    }
+                  },
+                ),
 
-              //location
-              InputFiled(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
-                controller: _locationController,
-                hintText: 'Location',
-                type: TextInputType.text,
-              ),
+                //location
+                InputFiled(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an event title';
+                    }
+                    return null;
+                  },
+                  controller: _locationController,
+                  hintText: 'Location',
+                  type: TextInputType.text,
+                ),
 
-              //max capacity
-              InputFiled(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
-                controller: _maxcapacityController,
-                hintText: 'Max Capacity',
-                inputFormatter: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                type: TextInputType.number,
-              ),
+                //max capacity
+                InputFiled(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an event title';
+                    }
+                    return null;
+                  },
+                  controller: _maxcapacityController,
+                  hintText: 'Max Capacity',
+                  inputFormatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  type: TextInputType.number,
+                ),
 
-              //description
-              InputFiled(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an event title';
-                  }
-                  return null;
-                },
-                controller: _descriptionController,
-                hintText: 'Description',
-                type: TextInputType.multiline,
-              ),
+                //description
+                InputFiled(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an event title';
+                    }
+                    return null;
+                  },
+                  controller: _descriptionController,
+                  hintText: 'Description',
+                  type: TextInputType.multiline,
+                ),
 
-              const SizedBox(
-                height: 20,
-              ),
+                const SizedBox(
+                  height: 20,
+                ),
 
-              // Save Button
-              MyButton(
-                  onTap: () => _uploadEventToFirestore(context), text: 'Save')
-            ],
+                // Save Button
+                MyButton(
+                    onTap: () => _uploadEventToFirestore(context), text: 'Save')
+              ],
+            ),
           ),
         ),
       ),

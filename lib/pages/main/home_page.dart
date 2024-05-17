@@ -137,6 +137,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, value, child) => Scaffold(
         // Floating action button for creating events
         floatingActionButton: FloatingActionButton(
+          elevation: 4.0,
           backgroundColor: const Color(0xffEC6408),
           onPressed: _onCreateEventPressed,
           child: const Icon(
@@ -158,59 +159,64 @@ class _HomePageState extends State<HomePage> {
           actions: _buildAppBarActions(),
         ),
         // Body of the screen, scrollable column
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Search bar
-              MySearchTextField(
-                controller: searchController,
-                hintText: 'Search',
-                onChanged: _onSearchTextChanged,
-              ),
-              const SizedBox(height: 15),
-              // Upcoming events section
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 75),
-                      child: Text(
-                        'Events For You',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: _goToEventsPage,
-                      child: const Text(
-                        'See all',
-                        style: TextStyle(
-                            color: Color(0xffEC6408),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      color: Color(0xffEC4608),
-                      size: 12,
-                    ),
-                  ],
+        body: GestureDetector(
+          onTap: () {
+            // Remove focus from text fields when tapping outside
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Search bar
+                MySearchTextField(
+                  controller: searchController,
+                  hintText: 'Search',
+                  onChanged: _onSearchTextChanged,
                 ),
-              ),
-              const SizedBox(height: 10),
-              // Horizontal list view for upcoming events
-              SizedBox(
-                height: 360,
-                child: EventListBuilder(searchQuery: searchQuery),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 40, left: 25, right: 25),
-                child: Divider(color: Colors.white),
-              ),
-              // Hot picks or additional sections can be added here
-            ],
+                const SizedBox(height: 15),
+                // Upcoming events section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 75),
+                        child: Text(
+                          'Events For You',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _goToEventsPage,
+                        child: const Text(
+                          'See all',
+                          style: TextStyle(
+                              color: Color(0xffEC6408),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Color(0xffEC4608),
+                        size: 12,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                // Horizontal list view for upcoming events
+                SizedBox(
+                  height: 360,
+                  child: EventListBuilder(searchQuery: searchQuery),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 40, left: 25, right: 25),
+                ),
+                // Hot picks or additional sections can be added here
+              ],
+            ),
           ),
         ),
       ),

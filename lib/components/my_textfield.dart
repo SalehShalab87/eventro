@@ -32,8 +32,8 @@ class MyNameTextField extends StatelessWidget {
         obscureText: obscureText,
         cursorColor: const Color(0xffEC6408),
         decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
       ),
@@ -74,8 +74,8 @@ class MyEmailTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscuretext,
         decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
       ),
@@ -117,8 +117,8 @@ class _MyPasswordTextFieldState extends State<MyPasswordTextField> {
         controller: widget.controller,
         obscureText: _obscureText,
         decoration: InputDecoration(
-          hintText: widget.hinttext,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: widget.hinttext,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
           suffixIcon: IconButton(
             alignment: Alignment.centerRight,
@@ -175,8 +175,8 @@ class _MyConfirmPasswordTextFieldState
         controller: widget.controller,
         obscureText: _obscureText,
         decoration: InputDecoration(
-          hintText: widget.hinttext,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: widget.hinttext,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
           suffixIcon: IconButton(
             alignment: Alignment.centerRight,
@@ -235,8 +235,8 @@ class MySearchTextField extends StatelessWidget {
             padding: EdgeInsets.only(right: 20),
             child: Icon(Icons.search),
           ),
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
       ),
@@ -280,8 +280,8 @@ class InputFiled extends StatelessWidget {
         cursorColor: const Color(0xffEC6408),
         controller: controller,
         decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
         validator: validator, // Set validator
@@ -319,8 +319,8 @@ class DateTimeInput extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           suffixIcon: IconButton(icon: Icon(icon), onPressed: onPressed),
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black54),
+          labelText: hintText,
+          labelStyle: const TextStyle(color: Colors.black54),
           border: InputBorder.none,
         ),
         readOnly: true,

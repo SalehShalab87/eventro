@@ -114,175 +114,181 @@ class _RegisterPageState extends State<RegitserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                // Logo
-                Image.asset(
-                  'images/slogo.png',
-                  height: 150,
-                  width: 150,
-                ),
+      body: GestureDetector(
+        onTap: () {
+          // Remove focus from text fields when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  // Logo
+                  Image.asset(
+                    'images/slogo.png',
+                    height: 150,
+                    width: 150,
+                  ),
 
-                // Sign Up text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Sign up',
-                        style: GoogleFonts.inter(
-                          textStyle: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                  // Sign Up text
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Sign up',
+                          style: GoogleFonts.inter(
+                            textStyle: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  //user name textfield
+                  MyNameTextField(
+                      controller: _nameController, hintText: 'Your Name'),
+
+                  // Username textfield
+                  MyEmailTextField(
+                    controller: _emailController,
+                    hintText: 'abc@email.com',
+                    obscuretext: false,
+                  ),
+
+                  // Password textfield
+                  MyPasswordTextField(
+                    controller: _passwordController,
+                    hinttext: "Your Password",
+                  ),
+
+                  // Confirm password textfield
+                  MyConfirmPasswordTextField(
+                    controller: _confirmedPasswordController,
+                    hinttext: "Confirm Your Password",
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  // Sign up button
+                  MyButton(
+                    text: 'Sign up',
+                    onTap: SignUserUp,
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  // Or continue with
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                          ),
+                        ),
+                        Text(
+                          'Or Continue With',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: const Color(0xff9D9898),
+                          ),
+                        ),
+                        const Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  // Google + Apple sign-in buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Google button
+                      SquareTile(
+                        onTap: () => GoogleServices().signInWithGoogle(context),
+                        ImagePath: 'images/google.png',
                       ),
+
+                      const SizedBox(
+                        width: 10,
+                      ),
+
+                      const SizedBox(
+                        width: 10,
+                      ),
+
+                      // Facebook logo
+                      SquareTile(
+                        onTap: () =>
+                            FacebookServices().signInWithFacebook(context),
+                        ImagePath: 'images/facebook.png',
+                      )
                     ],
                   ),
-                ),
 
-                const SizedBox(
-                  height: 10,
-                ),
+                  const SizedBox(
+                    height: 20,
+                  ),
 
-                //user name textfield
-                MyNameTextField(
-                    controller: _nameController, hintText: 'Your Name'),
-
-                // Username textfield
-                MyEmailTextField(
-                  controller: _emailController,
-                  hintText: 'abc@email.com',
-                  obscuretext: false,
-                ),
-
-                // Password textfield
-                MyPasswordTextField(
-                  controller: _passwordController,
-                  hinttext: "Your Password",
-                ),
-
-                // Confirm password textfield
-                MyConfirmPasswordTextField(
-                  controller: _confirmedPasswordController,
-                  hinttext: "Confirm Your Password",
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                // Sign up button
-                MyButton(
-                  text: 'Sign up',
-                  onTap: SignUserUp,
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                // Or continue with
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
+                  // Not a member, register now
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                        ),
-                      ),
                       Text(
-                        'Or Continue With',
+                        'Already have an account',
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          fontWeight: FontWeight.normal,
+                          fontWeight: FontWeight.w500,
                           color: const Color(0xff9D9898),
                         ),
                       ),
-                      const Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                        ),
+                      const SizedBox(
+                        width: 4,
                       ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const LoginPage();
+                          }));
+                        },
+                        child: Text(
+                          'Sign In',
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xffEC6408),
+                          ),
+                        ),
+                      )
                     ],
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                // Google + Apple sign-in buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Google button
-                    SquareTile(
-                      onTap: () => GoogleServices().signInWithGoogle(context),
-                      ImagePath: 'images/google.png',
-                    ),
-
-                    const SizedBox(
-                      width: 10,
-                    ),
-
-                    const SizedBox(
-                      width: 10,
-                    ),
-
-                    // Facebook logo
-                    SquareTile(
-                      onTap: () =>
-                          FacebookServices().signInWithFacebook(context),
-                      ImagePath: 'images/facebook.png',
-                    )
-                  ],
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                // Not a member, register now
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xff9D9898),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const LoginPage();
-                        }));
-                      },
-                      child: Text(
-                        'Sign In',
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xffEC6408),
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -72,41 +72,47 @@ class _ForgetMyPasswordPageState extends State<ForgetMyPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.asset(
-                'images/password.png',
-                height: 300,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Text(
-                  'Please enter your email address to request a password reset',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Gilroy', fontSize: 16),
+        body: GestureDetector(
+          onTap: () {
+            // Remove focus from text fields when tapping outside
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Image.asset(
+                  'images/password.png',
+                  height: 300,
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              //Email textfield
-              MyEmailTextField(
-                controller: EmailController,
-                hintText: 'abc@email.com',
-                obscuretext: false,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              MyButton(
-                text: 'Send',
-                onTap: PasswordRest,
-              ),
-            ],
+                const SizedBox(
+                  height: 30,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Text(
+                    'Please enter your email address to request a password reset',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontFamily: 'Gilroy', fontSize: 16),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                //Email textfield
+                MyEmailTextField(
+                  controller: EmailController,
+                  hintText: 'abc@email.com',
+                  obscuretext: false,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                MyButton(
+                  text: 'Send',
+                  onTap: PasswordRest,
+                ),
+              ],
+            ),
           ),
         ));
   }
