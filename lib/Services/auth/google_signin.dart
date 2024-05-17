@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/components/show_loadingcircle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +39,10 @@ class GoogleServices {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
       } else {
-        ShowErrorMessage.showError(
-            context, "Google Sign-In failed. User not found.");
+        showError(context, "Google Sign-In failed. User not found.");
       }
     } catch (e) {
-      ShowErrorMessage.showError(context, e.toString());
+      showError(context, e.toString());
     }
   }
 
@@ -63,7 +61,17 @@ class GoogleServices {
         });
       }
     } catch (e) {
-      ShowErrorMessage.showError(context, e.toString());
+      showError(context, e.toString());
     }
+  }
+
+  void showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+      ),
+    );
   }
 }

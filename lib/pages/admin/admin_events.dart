@@ -62,7 +62,8 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
             ),
             startingDayOfWeek: StartingDayOfWeek.sunday,
             calendarStyle: const CalendarStyle(
-                weekendTextStyle: TextStyle(color: Colors.black, fontSize: 18),
+                outsideTextStyle: TextStyle(color: Colors.black, fontSize: 16),
+                weekendTextStyle: TextStyle(color: Colors.black, fontSize: 16),
                 todayDecoration: BoxDecoration(
                   color:
                       Color.fromRGBO(236, 100, 8, 90), // Color for today's date
@@ -73,7 +74,7 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
                       Color.fromRGBO(236, 100, 8, 1), // Color for selected date
                   shape: BoxShape.circle,
                 ),
-                defaultTextStyle: TextStyle(fontSize: 18, color: Colors.black)),
+                defaultTextStyle: TextStyle(fontSize: 16, color: Colors.black)),
             daysOfWeekStyle: const DaysOfWeekStyle(
                 weekdayStyle: TextStyle(color: Colors.black)),
           ),
@@ -177,11 +178,14 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
         QuerySnapshot<Map<String, dynamic>> usersSnapshot =
             await _firestore.collection('users').get();
         usersSnapshot.docs.forEach((userDoc) async {
-          List<dynamic> eventsArray = userDoc['events'];
-          if (eventsArray.contains(eventId)) {
-            await _firestore.collection('users').doc(userDoc.id).update({
-              'events': FieldValue.arrayRemove([eventRef])
-            });
+          if (userDoc.data().containsKey('events')) {
+            List<dynamic> eventsArray = userDoc['events'];
+            String eventPath = 'eventsCollection/$eventId';
+            if (eventsArray.contains(eventPath)) {
+              await _firestore.collection('users').doc(userDoc.id).update({
+                'events': FieldValue.arrayRemove([eventPath])
+              });
+            }
           }
         });
 
