@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Controller for search text field
   final searchController = TextEditingController();
+  String searchQuery = '';
   // User object to store the current user
   late User? _user;
 
@@ -32,6 +33,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Fetch the current user when the widget is initialized
     _user = FirebaseAuth.instance.currentUser;
+  }
+
+  void _onSearchTextChanged(String query) {
+    setState(() {
+      searchQuery = query;
+    });
   }
 
   // Method to sign out the user
@@ -158,6 +165,7 @@ class _HomePageState extends State<HomePage> {
               MySearchTextField(
                 controller: searchController,
                 hintText: 'Search',
+                onChanged: _onSearchTextChanged,
               ),
               const SizedBox(height: 15),
               // Upcoming events section
@@ -193,9 +201,9 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 10),
               // Horizontal list view for upcoming events
-              const SizedBox(
+              SizedBox(
                 height: 360,
-                child: EventListBuilder(),
+                child: EventListBuilder(searchQuery: searchQuery),
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 40, left: 25, right: 25),
