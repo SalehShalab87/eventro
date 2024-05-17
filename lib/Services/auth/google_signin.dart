@@ -64,6 +64,7 @@ class GoogleServices {
       }
     } catch (e) {
       // Handle error, no need for context here since it's Firestore operation
+      // ignore: avoid_print
       print("Error saving user details to Firestore: $e");
     }
   }
