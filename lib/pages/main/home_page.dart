@@ -181,10 +181,10 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(right: 75),
+                        padding: EdgeInsets.only(right: 80),
                         child: Text(
-                          'Events For You',
-                          style: TextStyle(fontSize: 24),
+                          'Discover Events',
+                          style: TextStyle(fontSize: 22),
                         ),
                       ),
                       GestureDetector(
@@ -214,6 +214,7 @@ class _HomePageState extends State<HomePage> {
                 const Padding(
                   padding: EdgeInsets.only(top: 40, left: 25, right: 25),
                 ),
+                const SizedBox(height: 50),
                 // Hot picks or additional sections can be added here
               ],
             ),

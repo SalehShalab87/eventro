@@ -449,7 +449,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
                 // Save Button
                 MyButton(
-                    onTap: () => _uploadEventToFirestore(context), text: 'Save')
+                    onTap: () => _uploadEventToFirestore(context),
+                    text: 'Upload To Admin')
               ],
             ),
           ),
