@@ -29,7 +29,8 @@ class EventListBuilder extends StatelessWidget {
             .map((doc) => Event.fromSnapshot(doc))
             .where((event) =>
                 event.title.toLowerCase().contains(searchQuery.toLowerCase()) &&
-                event.approvalStatus == 'approved')
+                event.approvalStatus == 'approved' &&
+                event.dateTime!.isAfter(DateTime.now()))
             .toList();
         if (events.isEmpty) {
           return Center(
