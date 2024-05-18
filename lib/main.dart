@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'firebase/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 int? initScreen;
 
@@ -42,6 +44,13 @@ class Eventro extends StatelessWidget {
 }
 
 void main() async {
+  // Require Hybrid Composition mode on Android.
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    // Force Hybrid Composition mode.
+    mapsImplementation.useAndroidViewSurface = true;
+  }
   WidgetsFlutterBinding.ensureInitialized();
 
   // Retrieve the initialization screen preference from shared preferences

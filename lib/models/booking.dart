@@ -15,6 +15,10 @@ class Booking extends ChangeNotifier {
   CollectionReference events =
       FirebaseFirestore.instance.collection('eventsCollection');
 
+  // List for the user favorite
+  List<Event> userFavorite = [];
+  List<Event> eventsToBook = [];
+
   // Replace the hardcoded list with a method to fetch events from Firestore
   Future<List<Event>> getEventsToBook(BuildContext context) async {
     try {
@@ -36,6 +40,8 @@ class Booking extends ChangeNotifier {
           description: data['description'] ?? '',
           eventType: data['eventType'] ?? '',
           approvalStatus: data['status'] ?? '',
+          latitude: (data['lat'] as num?)?.toDouble() ?? 0.0,
+          longitude: (data['long'] as num?)?.toDouble() ?? 0.0,
         );
         eventsToBook.add(event);
       }
@@ -90,6 +96,8 @@ class Booking extends ChangeNotifier {
             description: data['description'] ?? '',
             eventType: data['eventType'] ?? '',
             approvalStatus: data['status'] ?? '',
+            latitude: (data['lat'] as num?)?.toDouble() ?? 0.0,
+            longitude: (data['long'] as num?)?.toDouble() ?? 0.0,
           );
           userFavorite.add(event);
         }
@@ -200,6 +208,8 @@ class Booking extends ChangeNotifier {
             description: eventData['description'] ?? '',
             eventType: eventData['eventType'] ?? '',
             approvalStatus: eventData['status'] ?? '',
+            latitude: (eventData['lat'] as num?)?.toDouble() ?? 0.0,
+            longitude: (eventData['long'] as num?)?.toDouble() ?? 0.0,
           );
 
           return event;
@@ -226,10 +236,6 @@ class Booking extends ChangeNotifier {
     }
   }
 
-  // List for the user favorite
-  List<Event> userFavorite = [];
-  List<Event> eventsToBook = [];
-
   // Get user favorite events
   List<Event> getUserFavoriteEvents() {
     return userFavorite;
@@ -241,7 +247,7 @@ class Booking extends ChangeNotifier {
     notifyListeners();
   }
 
-  //delte event from favoriet paeg for the user
+  //delete event from favorite page for the user
   Future<void> deleteEventFromFavorites(
       BuildContext context, Event event) async {
     try {

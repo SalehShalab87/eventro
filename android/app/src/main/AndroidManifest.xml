@@ -1,12 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:label="eventro"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:enableOnBackInvokedCallback="true"> <!-- Moved inside the <application> tag -->
+            <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyASr2eeue8be4mj_7XLMjxYNzcfxcbiHMA"/>    
         
         <activity
             android:name=".MainActivity"

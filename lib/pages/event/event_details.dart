@@ -3,8 +3,11 @@
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventDetails extends StatefulWidget {
   final String eventId;
@@ -18,17 +21,21 @@ class EventDetails extends StatefulWidget {
 class _EventDetailsState extends State<EventDetails> {
   late Stream<Event?> eventStream;
   bool isEventBooked = false;
+  bool _isMapVisible = false;
 
   @override
   void initState() {
     super.initState();
     eventStream = Booking().getEventDetailsStream(context, widget.eventId);
     checkEventBookingStatus();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        _isMapVisible = true;
+      });
+    });
   }
 
-  //check booking status
   Future<void> checkEventBookingStatus() async {
-    // Fetch the booking status of the event
     bool booked =
         await Booking().checkEventBookingStatus(context, widget.eventId);
 
@@ -39,7 +46,6 @@ class _EventDetailsState extends State<EventDetails> {
 
   Future<void> bookEvent(Event event) async {
     if (isEventBooked) {
-      // If event is already booked, show alert dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -57,7 +63,6 @@ class _EventDetailsState extends State<EventDetails> {
       return;
     }
 
-    // Show confirmation dialog before booking
     bool? confirm = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -65,9 +70,7 @@ class _EventDetailsState extends State<EventDetails> {
         content: const Text('Do you want to book this event?'),
         actions: [
           MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
         ],
       ),
@@ -77,11 +80,6 @@ class _EventDetailsState extends State<EventDetails> {
       bool success = await Booking().bookEvent(event);
 
       if (success) {
-        // If booking is successful, send notification
-
-        //Booking().sendNotification(event);**********************
-
-        // Show snackbar for successful booking
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,
@@ -90,12 +88,10 @@ class _EventDetailsState extends State<EventDetails> {
           ),
         );
 
-        // Update state to reflect booking status
         setState(() {
           isEventBooked = true;
         });
       } else {
-        // If booking fails, show error message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,
@@ -108,7 +104,6 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Future<void> cancelBooking(Event event) async {
-    // Show confirmation dialog before canceling
     bool? confirm = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -116,20 +111,16 @@ class _EventDetailsState extends State<EventDetails> {
         content: const Text('Do you want to cancel this booking?'),
         actions: [
           MyButton(onTap: () => Navigator.pop(context, true), text: 'Yes'),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           MyButton(onTap: () => Navigator.pop(context, false), text: 'No'),
         ],
       ),
     );
 
     if (confirm != null && confirm) {
-      // Implement logic to cancel the booking
       bool success = await Booking().cancelBooking(context, event.eventId);
 
       if (success) {
-        // If cancellation is successful, show snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,
@@ -138,12 +129,10 @@ class _EventDetailsState extends State<EventDetails> {
           ),
         );
 
-        // Update state to reflect booking status
         setState(() {
           isEventBooked = false;
         });
       } else {
-        // If cancellation fails, show snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,
@@ -166,141 +155,251 @@ class _EventDetailsState extends State<EventDetails> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<Event?>(
-          stream: eventStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xffEC6408),
-                ),
-              );
-            } else if (snapshot.hasError || snapshot.data == null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: StreamBuilder<Event?>(
+            stream: eventStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xffEC6408),
+                  ),
+                );
+              } else if (snapshot.hasError || snapshot.data == null) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text(
+                            'Error fetching event details.',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            eventStream = Booking()
+                                .getEventDetailsStream(context, widget.eventId);
+                          });
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.refresh),
+                            SizedBox(width: 8),
+                            Text('Retry'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                final event = snapshot.data!;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Error fetching event details.',
-                      style: TextStyle(color: Colors.red),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        event.imageUrl,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.fill,
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          eventStream = Booking()
-                              .getEventDetailsStream(context, widget.eventId);
-                        });
+                    const SizedBox(height: 16),
+                    Text(
+                      event.title,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.attach_money, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Price: ${event.price}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.event, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Event Type: ${event.eventType}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Location: ${event.location}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Date: ${DateFormat('yyyy-MM-dd').format(event.dateTime!)}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.access_time, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Time: ${DateFormat('HH:mm:ss').format(event.dateTime!)}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.people, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Current Attendees: ${event.currentAttendees.toString()}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.group, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Max Capacity: ${event.maxCapacity.toString()}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.description, color: Colors.black87),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Description: ${event.description}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Visibility(
+                      visible: _isMapVisible,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: SizedBox(
+                            height: 200,
+                            child: GoogleMap(
+                              zoomGesturesEnabled: true,
+                              tiltGesturesEnabled: true,
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(event.latitude, event.longitude),
+                                zoom: 14,
+                              ),
+                              markers: {
+                                Marker(
+                                  markerId: MarkerId(event.eventId),
+                                  position:
+                                      LatLng(event.latitude, event.longitude),
+                                  infoWindow: InfoWindow(
+                                    title: event.title,
+                                    snippet: event.description,
+                                  ),
+                                ),
+                              },
+                              mapType: MapType.normal,
+                              myLocationButtonEnabled: false,
+                              gestureRecognizers: {
+                                Factory<EagerGestureRecognizer>(
+                                    () => EagerGestureRecognizer())
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    MyButton(
+                      onTap: () {
+                        if (isEventBooked) {
+                          cancelBooking(event);
+                        } else {
+                          bookEvent(event);
+                        }
                       },
-                      child: const Text('Retry'),
+                      text: isEventBooked ? 'Cancel Booking' : 'Book Now',
                     ),
                   ],
-                ),
-              );
-            } else {
-              final event = snapshot.data!;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      event.imageUrl,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    event.title,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Price: ${event.price}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Event Type: ${event.eventType}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Location: ${event.location}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Date: ${DateFormat('yyyy-MM-dd').format(event.dateTime!)}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Time: ${DateFormat('HH:mm:ss').format(event.dateTime!)}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Current Attendees: ${event.currentAttendees.toString()}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Max Capacity: ${event.maxCapacity.toString()}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Description: ${event.description}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  MyButton(
-                    onTap: () {
-                      if (isEventBooked) {
-                        cancelBooking(event);
-                      } else {
-                        bookEvent(event);
-                      }
-                    },
-                    text: isEventBooked ? 'Cancel Booking' : 'Book Now',
-                  ),
-                ],
-              );
-            }
-          },
+                );
+              }
+            },
+          ),
         ),
       ),
     );

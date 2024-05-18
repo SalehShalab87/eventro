@@ -12,6 +12,8 @@ class Event {
   int maxCapacity;
   int currentAttendees;
   String approvalStatus;
+  final double latitude;
+  final double longitude;
 
   Event({
     required this.eventId,
@@ -25,6 +27,8 @@ class Event {
     required this.maxCapacity,
     required this.currentAttendees,
     required this.approvalStatus,
+    required this.latitude,
+    required this.longitude,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +44,8 @@ class Event {
       'maxCapacity': maxCapacity,
       'currentAttendees': currentAttendees,
       'status': approvalStatus,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 
@@ -61,6 +67,8 @@ class Event {
       currentAttendees: data['currentAttendees'] ??
           0, // Provide a default value if it's not available
       approvalStatus: data['status'] ?? '',
+      latitude: (data['lat'] as num?)?.toDouble() ?? 0.0,
+      longitude: (data['long'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }
