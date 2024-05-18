@@ -320,17 +320,20 @@ class _EventDetailsState extends State<EventDetails> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              iconSize: 30,
-              onPressed: () {
-                if (currentevent != null) {
-                  setEventReminder(currentevent!);
-                }
-              },
-              icon: const Icon(
-                Icons.notification_add_outlined,
-                color: Colors.black,
-              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                iconSize: 28,
+                onPressed: () {
+                  if (currentevent != null) {
+                    setEventReminder(currentevent!);
+                  }
+                },
+                icon: const Icon(
+                  Icons.notification_add_outlined,
+                  color: Colors.black,
+                )),
+          ),
         ],
         title: const Text(
           'Event details',

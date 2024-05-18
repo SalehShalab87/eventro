@@ -56,7 +56,7 @@ void main() async {
           ledColor: Colors.white,
         )
       ],
-      debug: true);
+      debug: false);
   // Require Hybrid Composition mode on Android.
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
