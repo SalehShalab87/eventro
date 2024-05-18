@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eventro/pages/event/events_page.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/main/home_page.dart';
@@ -29,6 +30,18 @@ List<Widget> _pages = <Widget>[
 ];
 
 class _MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    AwesomeNotifications().isNotificationAllowed().then(
+      (isAllowed) async {
+        if (!isAllowed) {
+          await AwesomeNotifications().requestPermissionToSendNotifications();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

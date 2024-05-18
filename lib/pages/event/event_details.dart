@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class EventDetails extends StatefulWidget {
   final String eventId;
@@ -25,6 +26,7 @@ class _EventDetailsState extends State<EventDetails> {
   bool isEventBooked = false;
   bool _isMapVisible = false;
   String? currentUserId;
+  Event? currentevent;
 
   @override
   void initState() {
@@ -180,10 +182,156 @@ class _EventDetailsState extends State<EventDetails> {
     }
   }
 
+  Future<void> setEventReminder(Event event) async {
+    // Request notification permissions if not already granted
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      await AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+
+    // Show a bottom sheet with reminder options
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Set Event Reminder',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  title: const Text('1 hour before'),
+                  leading: Radio<int>(
+                    activeColor: const Color(0xffEC6408),
+                    value: 1,
+                    groupValue: _selectedReminderOption,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedReminderOption = value!;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('1 day before'),
+                  leading: Radio<int>(
+                    activeColor: const Color(0xffEC6408),
+                    value: 24,
+                    groupValue: _selectedReminderOption,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedReminderOption = value!;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('2 days before'),
+                  leading: Radio<int>(
+                    activeColor: const Color(0xffEC6408),
+                    value: 48,
+                    groupValue: _selectedReminderOption,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedReminderOption = value!;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('a week before'),
+                  leading: Radio<int>(
+                    activeColor: const Color(0xffEC6408),
+                    value: 168,
+                    groupValue: _selectedReminderOption,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedReminderOption = value!;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: const ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(Color(0xffEC6408))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _scheduleReminder(event, _selectedReminderOption);
+                  },
+                  child: const Text(
+                    'Set Reminder',
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  int _selectedReminderOption = 24; // Default reminder option
+
+  Future<void> _scheduleReminder(Event event, int hoursBefore) async {
+    DateTime reminderTime =
+        event.dateTime!.subtract(Duration(hours: hoursBefore));
+
+    // Create the notification content
+    NotificationContent content = NotificationContent(
+      id: event.hashCode,
+      channelKey: 'basic_channel',
+      title: 'Event Reminder',
+      body: hoursBefore > 48
+          ? 'Reminder: ${event.title} is starting in ${hoursBefore ~/ 24} days'
+          : 'Reminder: ${event.title} is starting in $hoursBefore hours',
+      notificationLayout: NotificationLayout.BigText,
+    );
+
+    // Schedule the notification
+    await AwesomeNotifications().createNotification(
+      content: content,
+      schedule: NotificationCalendar.fromDate(
+          date: DateTime.now().add(const Duration(seconds: 2))),
+    );
+
+    // Show a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.green,
+        content: Text('Event reminder set successfully!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              iconSize: 30,
+              onPressed: () {
+                if (currentevent != null) {
+                  setEventReminder(currentevent!);
+                }
+              },
+              icon: const Icon(
+                Icons.notification_add_outlined,
+                color: Colors.black,
+              )),
+        ],
         title: const Text(
           'Event details',
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
@@ -239,6 +387,7 @@ class _EventDetailsState extends State<EventDetails> {
                   ),
                 );
               } else {
+                currentevent = snapshot.data!;
                 final event = snapshot.data!;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

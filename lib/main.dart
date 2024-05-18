@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/NotificationPage.dart';
 import 'package:eventro/pages/Onboarding_pages.dart';
@@ -44,6 +45,18 @@ class Eventro extends StatelessWidget {
 }
 
 void main() async {
+  await AwesomeNotifications().initialize(
+      'resource://drawable/slogo',
+      [
+        NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Eventro Notifications',
+          channelDescription: 'Eventro app notifications',
+          importance: NotificationImportance.High,
+          ledColor: Colors.white,
+        )
+      ],
+      debug: true);
   // Require Hybrid Composition mode on Android.
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
