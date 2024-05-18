@@ -1,11 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:eventro/Services/location_picker.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:eventro/components/my_textfield.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,6 +30,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   late TextEditingController _maxcapacityController;
   late TextEditingController _dateTimeController;
   late TextEditingController _locationController;
+  LatLng? _selectedLocation;
 
   @override
   void initState() {
@@ -48,6 +52,38 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _dateTimeController.dispose();
     _locationController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectLocation(BuildContext context) async {
+    final LatLng? selectedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerPage(
+          initialLocation: _selectedLocation,
+        ),
+      ),
+    );
+
+    if (selectedLocation != null) {
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          selectedLocation.latitude,
+          selectedLocation.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          setState(() {
+            _selectedLocation = selectedLocation;
+            Placemark placemark = placemarks.first;
+            String address =
+                placemark.locality ?? placemark.street ?? placemark.name ?? '';
+            _locationController.text = address;
+          });
+        }
+      } catch (e) {
+        print("Error getting address: $e");
+      }
+    }
   }
 
   Future<void> getImage() async {
@@ -184,6 +220,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
     final eventData = {
       'imageUrl': imageUrl,
       'location': _locationController.text,
+      'lat': _selectedLocation!.latitude,
+      'long': _selectedLocation!.longitude,
       'title': _titleController.text,
       'price': 'Free', // Assuming price is always free
       'description': _descriptionController.text,
@@ -191,7 +229,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
       'eventType': _eventTypeController.text,
       'maxCapacity': int.parse(_maxcapacityController.text),
       'currentAttendees': 0,
-      'status': 'pending', // Set approval status to pending
+      'status': 'pending',
+      'creatorId': FirebaseAuth
+          .instance.currentUser!.uid, // Set approval status to pending
     };
 
     // Upload the event to Firestore
@@ -402,16 +442,21 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
 
                 //location
-                InputFiled(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an event title';
-                    }
-                    return null;
-                  },
-                  controller: _locationController,
-                  hintText: 'Location',
-                  type: TextInputType.text,
+                GestureDetector(
+                  onTap: () => _selectLocation(context),
+                  child: AbsorbPointer(
+                    child: InputFiled(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an event title';
+                        }
+                        return null;
+                      },
+                      controller: _locationController,
+                      hintText: 'Select Location',
+                      type: TextInputType.text,
+                    ),
+                  ),
                 ),
 
                 //max capacity
@@ -450,7 +495,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 // Save Button
                 MyButton(
                     onTap: () => _uploadEventToFirestore(context),
-                    text: 'Upload To Admin')
+                    text: 'Upload Event')
               ],
             ),
           ),

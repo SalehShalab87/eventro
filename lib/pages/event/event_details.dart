@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/models/event.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ class _EventDetailsState extends State<EventDetails> {
   late Stream<Event?> eventStream;
   bool isEventBooked = false;
   bool _isMapVisible = false;
+  String? currentUserId;
 
   @override
   void initState() {
@@ -33,6 +36,8 @@ class _EventDetailsState extends State<EventDetails> {
         _isMapVisible = true;
       });
     });
+    // Get the current user's ID
+    currentUserId = FirebaseAuth.instance.currentUser?.uid;
   }
 
   Future<void> checkEventBookingStatus() async {
@@ -45,6 +50,36 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Future<void> bookEvent(Event event) async {
+    // Get the event document from Firestore
+    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+        .collection('eventsCollection')
+        .doc(event.eventId)
+        .get();
+
+    // Check if the event document exists
+    if (eventSnapshot.exists) {
+      // Get the creator ID from the event document
+      String creatorId = eventSnapshot.get('creatorId');
+
+      // Check if the current user is the event creator
+      if (currentUserId == creatorId) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Cannot Book Event'),
+            content: const Text(
+                'As the event creator, you cannot book your own event.'),
+            actions: [
+              MyButton(
+                onTap: () => Navigator.pop(context),
+                text: 'OK',
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+    }
     if (isEventBooked) {
       showDialog(
         context: context,
