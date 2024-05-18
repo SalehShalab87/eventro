@@ -301,8 +301,7 @@ class _EventDetailsState extends State<EventDetails> {
     // Schedule the notification
     await AwesomeNotifications().createNotification(
       content: content,
-      schedule: NotificationCalendar.fromDate(
-          date: DateTime.now().add(const Duration(seconds: 2))),
+      //TODO schedule: NotificationCalendar.fromDate(date: reminderTime),
     );
 
     // Show a success message
