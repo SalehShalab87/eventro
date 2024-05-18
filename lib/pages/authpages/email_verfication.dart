@@ -1,12 +1,36 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/show_error_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class EmailVerification extends StatelessWidget {
+class EmailVerification extends StatefulWidget {
   const EmailVerification({super.key});
+
+  @override
+  _EmailVerificationState createState() => _EmailVerificationState();
+}
+
+class _EmailVerificationState extends State<EmailVerification> {
+  bool _isEmailVerified = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkEmailVerification();
+  }
+
+  Future<void> _checkEmailVerification() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.reload();
+      setState(() {
+        _isEmailVerified = user.emailVerified;
+      });
+    }
+  }
 
   Future<void> resendVerificationEmail(BuildContext context) async {
     try {
@@ -31,7 +55,9 @@ class EmailVerification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String email = ModalRoute.of(context)?.settings.arguments as String;
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String email = user?.email ?? '';
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -59,17 +85,22 @@ class EmailVerification extends StatelessWidget {
             const SizedBox(height: 30),
             MyButton(
               onTap: () async {
-                User? user = FirebaseAuth.instance.currentUser;
-                await user?.reload();
-                if (user?.emailVerified ?? false) {
-                  // If email is verified, navigate to home page
+                setState(() {
+                  _isLoading = true;
+                });
+                await _checkEmailVerification();
+                if (_isEmailVerified) {
+                  // Navigate to home page
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
-                  // If email is not verified, resend verification email
-                  await resendVerificationEmail(context);
+                  // If email is not verified, show error message
+                  ShowErrorMessage.showError(context, 'Email not verified');
                 }
+                setState(() {
+                  _isLoading = false;
+                });
               },
-              text: 'Continue',
+              text: _isLoading ? 'Checking...' : 'Continue',
             ),
             const SizedBox(height: 20),
             GestureDetector(
