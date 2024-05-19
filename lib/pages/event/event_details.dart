@@ -132,7 +132,7 @@ class _EventDetailsState extends State<EventDetails> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,
-            content: Text('Failed to book the event. Please try again later.'),
+            content: Text('Failed to book the event. The event is full'),
             duration: Duration(seconds: 2),
           ),
         );
@@ -549,7 +549,7 @@ class _EventDetailsState extends State<EventDetails> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: SizedBox(
-                            height: 200,
+                            height: 300,
                             child: GoogleMap(
                               zoomGesturesEnabled: true,
                               tiltGesturesEnabled: true,

@@ -202,6 +202,7 @@ class MySearchTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final Function(String) onChanged;
+  final IconButton? suffixIcon;
 
   const MySearchTextField({
     super.key,
@@ -209,6 +210,7 @@ class MySearchTextField extends StatelessWidget {
     required this.hintText,
     this.obscureText = false,
     required this.onChanged,
+    required this.suffixIcon,
   });
 
   @override
@@ -222,15 +224,13 @@ class MySearchTextField extends StatelessWidget {
         border: Border.all(color: Colors.grey),
       ),
       child: TextField(
+        onSubmitted: onChanged,
+        onChanged: onChanged,
         controller: controller,
         obscureText: obscureText,
         cursorColor: const Color(0xffEC6408),
-        onChanged: onChanged,
         decoration: InputDecoration(
-          suffixIcon: const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Icon(Icons.tune),
-          ),
+          suffixIcon: suffixIcon,
           prefixIcon: const Padding(
             padding: EdgeInsets.only(right: 20),
             child: Icon(Icons.search),

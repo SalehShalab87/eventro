@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   // Controller for search text field
   final searchController = TextEditingController();
   String searchQuery = '';
+  String? eventTypeFilter;
   // User object to store the current user
   late User? _user;
 
@@ -33,12 +34,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Fetch the current user when the widget is initialized
     _user = FirebaseAuth.instance.currentUser;
-  }
-
-  void _onSearchTextChanged(String query) {
-    setState(() {
-      searchQuery = query;
-    });
   }
 
   // Method to sign out the user
@@ -131,6 +126,58 @@ class _HomePageState extends State<HomePage> {
     return actions;
   }
 
+  List<Map<String, dynamic>> eventTypes = [
+    {'name': 'Festival', 'icon': Icons.festival},
+    {'name': 'Music Event', 'icon': Icons.music_note},
+    {'name': 'Sports Event', 'icon': Icons.sports_soccer},
+    {'name': 'Coffee House Meetup', 'icon': Icons.local_cafe},
+    {'name': 'Charity Event', 'icon': Icons.volunteer_activism},
+    {'name': 'Cycles Event', 'icon': Icons.directions_bike},
+    {'name': 'Birthday Party', 'icon': Icons.cake},
+    {'name': 'Wedding', 'icon': Icons.wc},
+    {'name': 'Art Exhibition', 'icon': Icons.brush},
+    {'name': 'Theater Play', 'icon': Icons.theater_comedy},
+    {'name': 'Movie Night', 'icon': Icons.movie},
+  ];
+
+  Future<void> _showFilterDialog(BuildContext context) async {
+    String? selectedType = eventTypeFilter;
+
+    final String? pickedType = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Event Type'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: eventTypes.length,
+              itemBuilder: (BuildContext context, int index) {
+                return RadioListTile<String>(
+                  activeColor: const Color(0xffEC6408),
+                  title: Text(eventTypes[index]['name']),
+                  secondary: Icon(eventTypes[index]['icon']),
+                  value: eventTypes[index]['name'],
+                  groupValue: selectedType,
+                  onChanged: (String? value) {
+                    Navigator.pop(context, value);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    if (pickedType != null) {
+      setState(() {
+        eventTypeFilter = pickedType;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Booking>(
@@ -171,7 +218,23 @@ class _HomePageState extends State<HomePage> {
                 MySearchTextField(
                   controller: searchController,
                   hintText: 'Search',
-                  onChanged: _onSearchTextChanged,
+                  onChanged: (value) {
+                    if (value.isEmpty && eventTypeFilter != null) {
+                      // If search is cleared and a filter is active, apply the filter
+                      setState(() {});
+                    } else {
+                      setState(() {
+                        searchQuery = value;
+                        eventTypeFilter = null; // Clear filter when searching
+                      });
+                    }
+                  },
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.tune),
+                    onPressed: () {
+                      _showFilterDialog(context);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 15),
                 // Upcoming events section
@@ -209,7 +272,9 @@ class _HomePageState extends State<HomePage> {
                 // Horizontal list view for upcoming events
                 SizedBox(
                   height: 360,
-                  child: EventListBuilder(searchQuery: searchQuery),
+                  child: EventListBuilder(
+                      searchQuery: searchQuery,
+                      eventTypeFilter: eventTypeFilter),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 40, left: 25, right: 25),

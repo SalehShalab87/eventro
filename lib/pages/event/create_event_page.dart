@@ -31,6 +31,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
   late TextEditingController _dateTimeController;
   late TextEditingController _locationController;
   LatLng? _selectedLocation;
+  List<Map<String, dynamic>> eventTypes = [
+    {'name': 'Festival', 'icon': Icons.festival},
+    {'name': 'Music Event', 'icon': Icons.music_note},
+    {'name': 'Sports Event', 'icon': Icons.sports_soccer},
+    {'name': 'Coffee House Meetup', 'icon': Icons.local_cafe},
+    {'name': 'Charity Event', 'icon': Icons.volunteer_activism},
+    {'name': 'Cycles Event', 'icon': Icons.directions_bike},
+    {'name': 'Birthday Party', 'icon': Icons.cake},
+    {'name': 'Wedding', 'icon': Icons.wc},
+    {'name': 'Art Exhibition', 'icon': Icons.brush},
+    {'name': 'Theater Play', 'icon': Icons.theater_comedy},
+    {'name': 'Movie Night', 'icon': Icons.movie},
+  ];
 
   @override
   void initState() {
@@ -52,6 +65,44 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _dateTimeController.dispose();
     _locationController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectEventType(BuildContext context) async {
+    String? selectedType = _eventTypeController.text;
+
+    final String? pickedType = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Event Type'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: eventTypes.length,
+              itemBuilder: (BuildContext context, int index) {
+                return RadioListTile<String>(
+                  activeColor: const Color(0xffEC6408),
+                  title: Text(eventTypes[index]['name']),
+                  secondary: Icon(eventTypes[index]['icon']),
+                  value: eventTypes[index]['name'],
+                  groupValue: selectedType,
+                  onChanged: (String? value) {
+                    Navigator.pop(context, value);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    if (pickedType != null) {
+      setState(() {
+        _eventTypeController.text = pickedType;
+      });
+    }
   }
 
   Future<void> _selectLocation(BuildContext context) async {
@@ -81,7 +132,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
           });
         }
       } catch (e) {
-        print("Error getting address: $e");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Error getting location'),
+          backgroundColor: Colors.red,
+        ));
       }
     }
   }
@@ -412,17 +466,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   type: TextInputType.text,
                 ),
 
-                //event type
-                InputFiled(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an event title';
-                    }
-                    return null;
-                  },
-                  controller: _eventTypeController,
-                  hintText: 'Event Type',
-                  type: TextInputType.text,
+                // Event Type Input Field
+                GestureDetector(
+                  onTap: () => _selectEventType(context),
+                  child: AbsorbPointer(
+                    child: InputFiled(
+                      controller: _eventTypeController,
+                      hintText: 'Event Type',
+                      type: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an event type';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
 
                 //date time

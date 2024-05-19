@@ -8,8 +8,10 @@ import 'package:eventro/pages/event/event_details.dart';
 
 class EventListBuilder extends StatelessWidget {
   final String searchQuery;
+  final String? eventTypeFilter;
 
-  const EventListBuilder({super.key, required this.searchQuery});
+  const EventListBuilder(
+      {super.key, required this.searchQuery, this.eventTypeFilter});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,30 @@ class EventListBuilder extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
-        final events = snapshot.data!.docs
-            .map((doc) => Event.fromSnapshot(doc))
-            .where((event) =>
-                event.title.toLowerCase().contains(searchQuery.toLowerCase()) &&
-                event.approvalStatus == 'approved' &&
-                event.dateTime!.isAfter(DateTime.now()))
-            .toList();
+        var events =
+            snapshot.data!.docs.map((doc) => Event.fromSnapshot(doc)).toList();
+
+        // Determine the filtering logic based on input
+        if (searchQuery.isNotEmpty && eventTypeFilter == null) {
+          events = events
+              .where((event) =>
+                  event.title
+                          .toLowerCase()
+                          .contains(searchQuery.toLowerCase()) &&
+                      event.approvalStatus == 'approved' &&
+                      event.dateTime!.isAfter(DateTime.now()) ||
+                  event.eventType
+                      .toLowerCase()
+                      .contains(searchQuery.toLowerCase()))
+              .toList();
+        } else if (eventTypeFilter != null && searchQuery.isEmpty) {
+          events = events
+              .where((event) =>
+                  event.eventType == eventTypeFilter &&
+                  event.approvalStatus == 'approved' &&
+                  event.dateTime!.isAfter(DateTime.now()))
+              .toList();
+        }
         if (events.isEmpty) {
           return Center(
             child: Column(

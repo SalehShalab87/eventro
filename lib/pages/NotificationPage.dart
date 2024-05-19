@@ -1,5 +1,7 @@
-// ignore_for_file: file_names
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eventro/components/my_button.dart';
 import 'package:eventro/pages/main/main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,6 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch notifications for the current user from Cloud Firestore
     _notificationsStream = FirebaseFirestore.instance
         .collection('notifications')
         .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -33,40 +34,42 @@ class _NotificationPageState extends State<NotificationPage> {
           .doc(notificationId)
           .delete();
     } catch (e) {
-      // Handle any errors that occur during deletion
-      const ScaffoldMessenger(
-          child: SnackBar(
-        content: Text('Error deleting notification'),
-        backgroundColor: Colors.red,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error deleting notification'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete Notification'),
-          content:
-              const Text('Are you sure you want to delete this notification?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              child: const Text('Delete'),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Delete Notification'),
+              content: const Text(
+                  'Are you sure you want to delete this notification?'),
+              actions: <Widget>[
+                MyButton(
+                  text: 'Delete',
+                  onTap: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                const SizedBox(height: 10),
+                MyButton(
+                  text: 'Cancel',
+                  onTap: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   @override
@@ -75,8 +78,10 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const MainPage())),
+          onPressed: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainPage()),
+          ),
         ),
         title: const Text(
           'Notifications',
@@ -92,31 +97,24 @@ class _NotificationPageState extends State<NotificationPage> {
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: CircularProgressIndicator(
-              color: Color(0xffEC6408),
-            ));
+              child: CircularProgressIndicator(color: Color(0xffEC6408)),
+            );
           }
           if (snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Padding(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'images/no_notifications.png',
-                    height: 300,
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  const Text(
-                    'You have no notifications yet',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('images/no_notifications.png', height: 300),
+                    const SizedBox(height: 40),
+                    const Text('You have no notifications yet',
+                        style: TextStyle(fontSize: 18)),
+                  ],
+                ),
               ),
-            ));
+            );
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
@@ -135,11 +133,13 @@ class _NotificationPageState extends State<NotificationPage> {
                   bool confirmDelete =
                       await _showDeleteConfirmationDialog(context);
                   if (confirmDelete) {
-                    _deleteNotification(notificationId);
+                    await _deleteNotification(notificationId);
+                    setState(() {
+                      snapshot.data!.docs.removeAt(index);
+                    });
+                  } else {
+                    setState(() {}); // Refresh state to keep the item
                   }
-                },
-                confirmDismiss: (direction) async {
-                  return await _showDeleteConfirmationDialog(context);
                 },
                 background: Container(
                   alignment: Alignment.centerRight,
@@ -156,9 +156,8 @@ class _NotificationPageState extends State<NotificationPage> {
                     if (eventSnapshot.connectionState ==
                         ConnectionState.waiting) {
                       return const ListTile(
-                        leading: CircularProgressIndicator(
-                          color: Color(0xffEC6408),
-                        ),
+                        leading:
+                            CircularProgressIndicator(color: Color(0xffEC6408)),
                       );
                     }
                     if (!eventSnapshot.hasData || !eventSnapshot.data!.exists) {
@@ -170,19 +169,21 @@ class _NotificationPageState extends State<NotificationPage> {
                     final event = eventSnapshot.data!;
                     final eventImageUrl = event['imageUrl'];
 
-                    return ListTile(
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          eventImageUrl,
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover,
+                    return Card(
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            eventImageUrl,
+                            width: 48,
+                            height: 48,
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                        title: Text(notification['title']),
+                        subtitle: Text(notification['body']),
+                        trailing: Text(formattedDate),
                       ),
-                      title: Text(notification['title']),
-                      subtitle: Text(notification['body']),
-                      trailing: Text(formattedDate),
                     );
                   },
                 ),
