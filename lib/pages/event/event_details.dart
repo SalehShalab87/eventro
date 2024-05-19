@@ -304,6 +304,15 @@ class _EventDetailsState extends State<EventDetails> {
       //TODO schedule: NotificationCalendar.fromDate(date: reminderTime),
     );
 
+    // Upload the notification to Cloud Firestore
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+      'eventId': event.eventId,
+      'title': content.title,
+      'body': content.body,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

@@ -229,9 +229,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
       'eventType': _eventTypeController.text,
       'maxCapacity': int.parse(_maxcapacityController.text),
       'currentAttendees': 0,
-      'status': 'pending',
-      'creatorId': FirebaseAuth
-          .instance.currentUser!.uid, // Set approval status to pending
+      'status': 'pending', // Set approval status to pending
+      'creatorId': FirebaseAuth.instance.currentUser!.uid,
     };
 
     // Upload the event to Firestore
