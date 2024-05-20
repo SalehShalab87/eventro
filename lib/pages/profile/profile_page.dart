@@ -7,6 +7,7 @@ import 'package:eventro/components/profile_list_tile.dart';
 import 'package:eventro/pages/about_page.dart';
 import 'package:eventro/pages/event/favorite_page.dart';
 import 'package:eventro/pages/event/user_events.dart';
+import 'package:eventro/pages/event/user_history.dart';
 import 'package:eventro/pages/profile/upadte_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -186,6 +187,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const MyEvents(),
+                    )),
+              ),
+              ProfileMenuWidget(
+                tilte: 'My Booking history',
+                iconData: Icons.history,
+                onPress: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyBookingHistory(),
                     )),
               ),
               ProfileMenuWidget(

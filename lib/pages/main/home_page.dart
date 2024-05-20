@@ -6,6 +6,8 @@ import 'package:eventro/components/my_textfield.dart';
 import 'package:eventro/models/booking.dart';
 import 'package:eventro/pages/event/create_event_page.dart';
 import 'package:eventro/pages/event/events_page.dart';
+import 'package:eventro/pages/event/user_events.dart';
+import 'package:eventro/pages/event/user_history.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/drawer.dart';
 import 'package:eventro/pages/NotificationPage.dart';
@@ -49,6 +51,26 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
+  }
+
+  void _goToMyBookingsPage() {
+    // Pop the drawer
+    Navigator.pop(context);
+    // Go to profile page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyBookingHistory()),
+    );
+  }
+
+  void _goToMyEventsPage() {
+    // Pop the drawer
+    Navigator.pop(context);
+    // Go to profile page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyEvents()),
     );
   }
 
@@ -194,6 +216,8 @@ class _HomePageState extends State<HomePage> {
         ),
         // Drawer for navigation options
         drawer: MyDrawer(
+          onHistoryEventsTap: _goToMyBookingsPage,
+          onMyEventsTap: _goToMyEventsPage,
           onProfileTap: _goToUserProfile,
           onFavoriteTap: _goToFavoritePage,
           onEventsTap: _goToEventsPage,

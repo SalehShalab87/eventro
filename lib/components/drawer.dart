@@ -6,6 +6,8 @@ class MyDrawer extends StatefulWidget {
   final Function()? onSignOutTap;
   final Function()? onFavoriteTap;
   final Function()? onEventsTap;
+  final Function()? onMyEventsTap;
+  final Function()? onHistoryEventsTap;
 
   const MyDrawer({
     super.key,
@@ -13,6 +15,8 @@ class MyDrawer extends StatefulWidget {
     required this.onSignOutTap,
     required this.onFavoriteTap,
     required this.onEventsTap,
+    required this.onMyEventsTap,
+    required this.onHistoryEventsTap,
   });
 
   @override
@@ -63,6 +67,14 @@ class _MyDrawerState extends State<MyDrawer> {
                 text: 'E V E N T S',
                 onTap: widget.onEventsTap,
               ),
+              MyListTile(
+                  icon: Icons.event_available,
+                  text: 'M Y E V E N T S',
+                  onTap: widget.onMyEventsTap),
+              MyListTile(
+                  icon: Icons.history,
+                  text: 'M Y B O O K I N S ',
+                  onTap: widget.onHistoryEventsTap)
             ],
           ),
           Padding(

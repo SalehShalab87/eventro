@@ -50,6 +50,13 @@ class EventListBuilder extends StatelessWidget {
                   event.approvalStatus == 'approved' &&
                   event.dateTime!.isAfter(DateTime.now()))
               .toList();
+        } else {
+          // Default filtering for approved and upcoming events
+          events = events
+              .where((event) =>
+                  event.approvalStatus == 'approved' &&
+                  event.dateTime!.isAfter(DateTime.now()))
+              .toList();
         }
         if (events.isEmpty) {
           return Center(

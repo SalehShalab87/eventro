@@ -341,6 +341,7 @@ class Booking extends ChangeNotifier {
         'dateTime': event.dateTime,
         'eventType': event.eventType,
         'currentAttendees': event.currentAttendees,
+        'hasAtteended': false,
       });
 
       // Update the current attendees count for the event
