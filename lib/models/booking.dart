@@ -19,6 +19,37 @@ class Booking extends ChangeNotifier {
   List<Event> userFavorite = [];
   List<Event> eventsToBook = [];
 
+  Future<List<Event>> getUserBookedEvents(
+      BuildContext context, String userId) async {
+    List<Event> bookedEvents = [];
+
+    try {
+      // Fetch all booking documents for the current user
+      QuerySnapshot bookingSnapshot = await firestore
+          .collection('bookings')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      // Fetch each event based on eventId from the bookings
+      for (var doc in bookingSnapshot.docs) {
+        DocumentSnapshot eventDoc = await firestore
+            .collection('eventsCollection')
+            .doc(doc['eventId'])
+            .get();
+
+        if (eventDoc.exists) {
+          Event event = Event.fromSnapshot(eventDoc);
+          bookedEvents.add(event);
+        }
+      }
+    } catch (e) {
+      ShowErrorMessage.showError(context, 'Error fetching bookings');
+      // Handle exceptions or errors as needed
+    }
+
+    return bookedEvents;
+  }
+
   // Replace the hardcoded list with a method to fetch events from Firestore
   Future<List<Event>> getEventsToBook(BuildContext context) async {
     try {

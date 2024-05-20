@@ -8,12 +8,14 @@ class MyNameTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
+  final FocusNode focusNode;
 
   const MyNameTextField({
     super.key,
     required this.controller,
     required this.hintText,
     this.obscureText = false,
+    required this.focusNode,
   });
 
   @override
@@ -27,6 +29,7 @@ class MyNameTextField extends StatelessWidget {
         border: Border.all(color: Colors.grey),
       ),
       child: TextField(
+        focusNode: focusNode,
         keyboardType: TextInputType.name,
         controller: controller,
         obscureText: obscureText,

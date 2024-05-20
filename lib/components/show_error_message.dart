@@ -10,6 +10,7 @@ class ShowErrorMessage {
   ShowErrorMessage._internal();
 
   static void showError(BuildContext context, String message) {
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),

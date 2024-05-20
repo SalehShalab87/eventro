@@ -29,11 +29,18 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   String? downloadURL;
   String name = '';
   String email = '';
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _fetchAdminData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchFocusNode.dispose();
   }
 
   Future<void> _fetchAdminData() async {
@@ -314,7 +321,9 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                 ),
                 const SizedBox(height: 20),
                 MyNameTextField(
-                    controller: _nameController, hintText: 'Name: $name'),
+                    focusNode: _searchFocusNode,
+                    controller: _nameController,
+                    hintText: 'Name: $name'),
                 const SizedBox(height: 10),
                 MyEmailTextField(
                     controller: _emailController,

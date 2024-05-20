@@ -31,6 +31,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 // Text field Editing Controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final FocusNode f = FocusNode();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void dispose() {
     _emailController.dispose();
     _nameController.dispose();
+    f.dispose();
     super.dispose();
   }
 
@@ -178,6 +180,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 const Divider(),
                 const SizedBox(height: 10),
                 MyNameTextField(
+                    focusNode: f,
                     controller: _nameController,
                     hintText: currentUser.displayName!),
                 MyEmailTextField(

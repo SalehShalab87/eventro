@@ -51,7 +51,41 @@ class _EventDetailsState extends State<EventDetails> {
     });
   }
 
+  Future<bool> checkForDateTimeConflicts(DateTime newEventDateTime) async {
+    // Fetch user's booked events
+    List<Event> userEvents =
+        await Booking().getUserBookedEvents(context, currentUserId!);
+
+    // Check for time conflicts
+    for (Event bookedEvent in userEvents) {
+      if (bookedEvent.dateTime!.isAtSameMomentAs(newEventDateTime)) {
+        return true; // Conflict found
+      }
+    }
+    return false; // No conflict
+  }
+
   Future<void> bookEvent(Event event) async {
+    // First, check if the user has already booked any event at the same date and time
+    bool hasConflict = await checkForDateTimeConflicts(event.dateTime!);
+
+    if (hasConflict) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Booking Conflict'),
+          content: const Text('You have already booked an event at this time.'),
+          actions: <Widget>[
+            MyButton(
+              onTap: () => Navigator.of(context).pop(),
+              text: 'OK',
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     // Get the event document from Firestore
     DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
         .collection('eventsCollection')

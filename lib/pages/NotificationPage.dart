@@ -16,6 +16,7 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   late Stream<QuerySnapshot> _notificationsStream;
+  final Set<String> _pendingDeletions = Set();
 
   @override
   void initState() {
@@ -70,6 +71,21 @@ class _NotificationPageState extends State<NotificationPage> {
           },
         ) ??
         false;
+  }
+
+  Future<bool> _confirmDismiss(String notificationId) async {
+    bool confirmDelete = await _showDeleteConfirmationDialog(context);
+    if (confirmDelete) {
+      setState(() {
+        _pendingDeletions.add(notificationId);
+      });
+      await _deleteNotification(notificationId);
+      setState(() {
+        _pendingDeletions.remove(notificationId);
+      });
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -127,20 +143,9 @@ class _NotificationPageState extends State<NotificationPage> {
                   DateFormat('MMM d, y').format(createdAt.toDate());
 
               return Dismissible(
+                confirmDismiss: (direction) => _confirmDismiss(notificationId),
                 key: Key(notificationId),
                 direction: DismissDirection.endToStart,
-                onDismissed: (direction) async {
-                  bool confirmDelete =
-                      await _showDeleteConfirmationDialog(context);
-                  if (confirmDelete) {
-                    await _deleteNotification(notificationId);
-                    setState(() {
-                      snapshot.data!.docs.removeAt(index);
-                    });
-                  } else {
-                    setState(() {}); // Refresh state to keep the item
-                  }
-                },
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 20),

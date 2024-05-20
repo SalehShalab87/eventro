@@ -27,6 +27,7 @@ class _RegisterPageState extends State<RegitserPage> {
   final TextEditingController _confirmedPasswordController =
       TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final FocusNode f = FocusNode();
 
   // Dispose controllers
   @override
@@ -35,6 +36,7 @@ class _RegisterPageState extends State<RegitserPage> {
     _passwordController.dispose();
     _confirmedPasswordController.dispose();
     _nameController.dispose();
+    f.dispose();
     super.dispose();
   }
 
@@ -157,7 +159,9 @@ class _RegisterPageState extends State<RegitserPage> {
 
                   //user name textfield
                   MyNameTextField(
-                      controller: _nameController, hintText: 'Your Name'),
+                      focusNode: f,
+                      controller: _nameController,
+                      hintText: 'Your Name'),
 
                   // Username textfield
                   MyEmailTextField(
