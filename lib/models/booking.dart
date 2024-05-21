@@ -241,6 +241,7 @@ class Booking extends ChangeNotifier {
             approvalStatus: eventData['status'] ?? '',
             latitude: (eventData['lat'] as num?)?.toDouble() ?? 0.0,
             longitude: (eventData['long'] as num?)?.toDouble() ?? 0.0,
+            creatorId: eventData['creatorId'] ?? '',
           );
 
           return event;

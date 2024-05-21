@@ -1,4 +1,6 @@
 import 'package:eventro/pages/event/event_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class BookedEventsTile extends StatelessWidget {
@@ -6,6 +8,7 @@ class BookedEventsTile extends StatelessWidget {
   final String eventName;
   final String eventID;
   final int currentAttendees;
+  final double rating;
   final VoidCallback onDelete;
   final IconData icon;
 
@@ -17,6 +20,7 @@ class BookedEventsTile extends StatelessWidget {
     required this.onDelete,
     required this.eventID,
     required this.icon,
+    required this.rating,
   });
 
   @override
@@ -40,7 +44,9 @@ class BookedEventsTile extends StatelessWidget {
                 )
               : const Placeholder(), // Placeholder for image if imageUrl is empty
           title: Text(eventName),
-          subtitle: Text('Current Attendees: $currentAttendees'),
+          subtitle: FirebaseAuth.instance.currentUser == null
+              ? Text('Attendees: $currentAttendees\nRating: $rating')
+              : Text('Attendees: $currentAttendees'),
           trailing: Container(
             decoration: const BoxDecoration(
                 color: Color(0xffEC6408),

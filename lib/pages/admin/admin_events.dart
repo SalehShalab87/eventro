@@ -121,14 +121,16 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
   // Function to build UI for event card
   Widget _buildEventCard(Event event) {
     return BookedEventsTile(
-        imageUrl: event.imageUrl,
-        eventName: event.title,
-        currentAttendees: event.currentAttendees,
-        onDelete: () {
-          deleteEvent(context, event.eventId);
-        },
-        eventID: event.eventId,
-        icon: Icons.delete_outlined);
+      imageUrl: event.imageUrl,
+      eventName: event.title,
+      rating: event.rating,
+      onDelete: () {
+        deleteEvent(context, event.eventId);
+      },
+      eventID: event.eventId,
+      icon: Icons.delete_outlined,
+      currentAttendees: event.currentAttendees,
+    );
   }
 
   // Function to build the placeholder widget when no events are available

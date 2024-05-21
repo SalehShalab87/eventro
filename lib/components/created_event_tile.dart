@@ -8,6 +8,7 @@ class CreatedEventTile extends StatelessWidget {
   final String status;
   final String rejectionReason;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
   final IconData icon;
 
   const CreatedEventTile(
@@ -18,7 +19,8 @@ class CreatedEventTile extends StatelessWidget {
       required this.onDelete,
       required this.eventID,
       required this.icon,
-      this.rejectionReason = ''});
+      this.rejectionReason = '',
+      required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -54,21 +56,45 @@ class CreatedEventTile extends StatelessWidget {
                   ],
                 )
               : Text('Status: $status'),
-          trailing: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffEC6408),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xffEC6408),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
+                child: IconButton(
+                  onPressed: onEdit,
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.black,
+                  ),
+                ),
               ),
-            ),
-            child: IconButton(
-              onPressed: onDelete,
-              icon: Icon(
-                icon,
-                color: Colors.black,
+              const SizedBox(
+                width: 10,
               ),
-            ),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xffEC6408),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
+                child: IconButton(
+                  onPressed: onDelete,
+                  icon: Icon(
+                    icon,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

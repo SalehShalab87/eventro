@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eventro/components/booked_events_tile.dart';
+import 'package:eventro/models/event.dart';
+import 'package:eventro/pages/event/edit_event.dart';
 import 'package:flutter/material.dart';
 import 'package:eventro/components/created_event_tile.dart';
 import 'package:eventro/components/my_button.dart';
@@ -168,6 +170,22 @@ class MyEvents extends StatelessWidget {
                                             context, eventSnapshot.data!.id);
                                       },
                                       eventID: eventSnapshot.data!.id,
+                                      onEdit: () {
+                                        FirebaseFirestore.instance
+                                            .collection('eventsCollection')
+                                            .doc(eventSnapshot.data!.id)
+                                            .get()
+                                            .then((event) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditEventPage(
+                                                          event: Event
+                                                              .fromSnapshot(
+                                                                  event))));
+                                        });
+                                      },
                                     );
                                   },
                                 );
@@ -239,6 +257,7 @@ class MyEvents extends StatelessWidget {
                                   final eventData = eventSnapshot.data!.data()
                                       as Map<String, dynamic>;
                                   return BookedEventsTile(
+                                    rating: eventData['averageRating'] ?? 0.0,
                                     icon: Icons.close,
                                     imageUrl: eventData['imageUrl'] ?? '',
                                     eventName: eventData['title'] ?? '',

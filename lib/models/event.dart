@@ -14,8 +14,11 @@ class Event {
   String approvalStatus;
   final double latitude;
   final double longitude;
+  final double rating;
+  final String? creatorId;
 
   Event({
+    this.creatorId,
     required this.eventId,
     required this.imageUrl,
     required this.location,
@@ -29,6 +32,7 @@ class Event {
     required this.approvalStatus,
     required this.latitude,
     required this.longitude,
+    this.rating = 0.0,
   });
 
   Map<String, dynamic> toMap() {
@@ -53,9 +57,9 @@ class Event {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Event(
       eventId: snapshot.id,
-      imageUrl: data['imageUrl'],
+      imageUrl: data['imageUrl'] ?? '',
       location: data['location'] ?? '',
-      title: data['title'],
+      title: data['title'] ?? '',
       dateTime: data['datetime'] != null
           ? (data['datetime'] as Timestamp).toDate()
           : null,
@@ -69,6 +73,8 @@ class Event {
       approvalStatus: data['status'] ?? '',
       latitude: (data['lat'] as num?)?.toDouble() ?? 0.0,
       longitude: (data['long'] as num?)?.toDouble() ?? 0.0,
+      rating: data['averageRating']?.toDouble() ?? 0.0,
+      creatorId: data['creatorId'] ?? '',
     );
   }
 }

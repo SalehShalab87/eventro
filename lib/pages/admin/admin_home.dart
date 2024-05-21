@@ -37,7 +37,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Stream<List<Event>> _getTopEvent() {
     return FirebaseFirestore.instance
         .collection('eventsCollection')
-        .orderBy('currentAttendees', descending: true)
+        .orderBy('averageRating', descending: true)
         .limit(3)
         .snapshots()
         .map((snapshot) =>
@@ -218,7 +218,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     return BookedEventsTile(
                       imageUrl: event.imageUrl,
                       eventName: event.title,
-                      currentAttendees: event.currentAttendees,
+                      rating: event.rating,
                       onDelete: () {
                         Navigator.push(
                           context,
@@ -230,6 +230,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                       },
                       eventID: event.eventId,
                       icon: Icons.info_outline,
+                      currentAttendees: event.currentAttendees,
                     );
                   }).toList(),
                 );

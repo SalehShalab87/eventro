@@ -52,11 +52,13 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Future<bool> checkForDateTimeConflicts(DateTime newEventDateTime) async {
-    // Fetch user's booked events
+    if (currentUserId == null) {
+      // Return false or handle appropriately if there is no user
+      return false;
+    }
+
     List<Event> userEvents =
         await Booking().getUserBookedEvents(context, currentUserId!);
-
-    // Check for time conflicts
     for (Event bookedEvent in userEvents) {
       if (bookedEvent.dateTime!.isAtSameMomentAs(newEventDateTime)) {
         return true; // Conflict found
@@ -166,7 +168,7 @@ class _EventDetailsState extends State<EventDetails> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,
-            content: Text('Failed to book the event. The event is full'),
+            content: Text('Failed to book the event'),
             duration: Duration(seconds: 2),
           ),
         );
@@ -614,15 +616,19 @@ class _EventDetailsState extends State<EventDetails> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    MyButton(
-                      onTap: () {
-                        if (isEventBooked) {
-                          cancelBooking(event);
-                        } else {
-                          bookEvent(event);
-                        }
-                      },
-                      text: isEventBooked ? 'Cancel Booking' : 'Book Now',
+                    Visibility(
+                      visible: currentUserId != null &&
+                          currentUserId != event.creatorId,
+                      child: MyButton(
+                        onTap: () {
+                          if (isEventBooked) {
+                            cancelBooking(event);
+                          } else {
+                            bookEvent(event);
+                          }
+                        },
+                        text: isEventBooked ? 'Cancel Booking' : 'Book Now',
+                      ),
                     ),
                   ],
                 );

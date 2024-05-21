@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/models/event.dart';
+import 'package:eventro/pages/event/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -43,73 +44,102 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
               );
             }
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No Pending events available.'));
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 100),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('images/no_bookings.png', height: 300),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      const Text(
+                        'No Pending events available.',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             }
             return Column(
               children: snapshot.data!.map((event) {
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.network(
-                          event.imageUrl,
-                          height: 120,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          event.title,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Type: ${event.eventType}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Location: ${event.location}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          'Date: ${event.dateTime != null ? DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(event.dateTime!.millisecondsSinceEpoch)) : "Unknown"}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => _rejectEvent(event),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white),
-                                child: const Text('R E J E C T'),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EventDetails(
+                                  eventId: event.eventId,
+                                )));
+                  },
+                  child: Card(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(
+                            event.imageUrl,
+                            height: 120,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(height: 10),
+                          Center(
+                            child: Text(
+                              event.title,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Type: ${event.eventType}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Location: ${event.location}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Date: ${event.dateTime != null ? DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(event.dateTime!.millisecondsSinceEpoch)) : "Unknown"}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => _rejectEvent(event),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white),
+                                  child: const Text('R E J E C T'),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => _acceptEvent(event),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white),
-                                child: const Text('A C C E P T'),
+                              const SizedBox(
+                                width: 10,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => _acceptEvent(event),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white),
+                                  child: const Text('A C C E P T'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
