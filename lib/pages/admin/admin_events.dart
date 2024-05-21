@@ -123,7 +123,7 @@ class _AdminEventsPageState extends State<AdminEventsPage> {
     return BookedEventsTile(
       imageUrl: event.imageUrl,
       eventName: event.title,
-      rating: event.rating,
+      rating: event.rating.toStringAsFixed(1),
       onDelete: () {
         deleteEvent(context, event.eventId);
       },

@@ -15,7 +15,7 @@ class ShowErrorMessage {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
+        duration: const Duration(milliseconds: 1500),
       ),
     );
   }

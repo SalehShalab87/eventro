@@ -1,5 +1,6 @@
-// ignore_for_file: file_names, non_constant_identifier_names
+// ignore_for_file: file_names, non_constant_identifier_names, use_build_context_synchronously
 
+import 'package:eventro/components/show_loadingcircle.dart';
 import 'package:eventro/screens/onboard1.dart';
 import 'package:eventro/screens/onboard2.dart';
 import 'package:eventro/screens/onboard3.dart';
@@ -15,11 +16,20 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  //controller to kepp track pages
   final PageController _controller = PageController();
-
-  // keep track if we are in the last page or not
   bool OnLastPage = false;
+
+  void navigateToLogin() async {
+    showLoadingCircle(context); // Show loading indicator
+    // Adding a delay to ensure the loading indicator is visible
+    await Future.delayed(const Duration(milliseconds: 700));
+    await Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) {
+      return const LoginPage();
+    }));
+    Navigator.of(context, rootNavigator: true)
+        .pop(); // Make sure to pop the loading dialog
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,35 +44,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               });
             },
             children: const [
-              //page1
               Onboard1(),
-              //page2
               Onboard2(),
-              //page3
               Onboard3(),
             ],
           ),
-
-          //dot indicator
           Container(
               alignment: const Alignment(0, 0.75),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //left side skip button
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const LoginPage();
-                      }));
-                    },
+                    onTap: navigateToLogin,
                     child: const Text(
                       'Skip',
                       style: TextStyle(fontFamily: "Gilroy", fontSize: 16),
                     ),
                   ),
-
                   SmoothPageIndicator(
                     controller: _controller,
                     count: 3,
@@ -71,16 +69,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       activeDotColor: Color(0xffEC6408),
                     ),
                   ),
-
-                  //right side next or get started button
                   OnLastPage
                       ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const LoginPage();
-                            }));
-                          },
+                          onTap: navigateToLogin,
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: const BoxDecoration(

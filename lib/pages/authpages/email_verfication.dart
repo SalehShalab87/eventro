@@ -26,6 +26,7 @@ class _EmailVerificationState extends State<EmailVerification> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await user.reload();
+      await Future.delayed(const Duration(seconds: 1));
       setState(() {
         _isEmailVerified = user.emailVerified;
       });
@@ -90,11 +91,10 @@ class _EmailVerificationState extends State<EmailVerification> {
                 });
                 await _checkEmailVerification();
                 if (_isEmailVerified) {
-                  // Navigate to home page
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
-                  // If email is not verified, show error message
-                  ShowErrorMessage.showError(context, 'Email not verified');
+                  ShowErrorMessage.showError(
+                      context, 'Email not verified. Please verify your email.');
                 }
                 setState(() {
                   _isLoading = false;

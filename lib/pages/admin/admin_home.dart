@@ -218,7 +218,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     return BookedEventsTile(
                       imageUrl: event.imageUrl,
                       eventName: event.title,
-                      rating: event.rating,
+                      rating: event.rating.toStringAsFixed(1),
                       onDelete: () {
                         Navigator.push(
                           context,

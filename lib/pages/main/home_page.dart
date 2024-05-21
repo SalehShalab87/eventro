@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/Services/auth/sign_out.dart';
 import 'package:eventro/components/event_list_builder.dart';
 import 'package:eventro/components/my_textfield.dart';
@@ -30,17 +31,29 @@ class _HomePageState extends State<HomePage> {
   String? eventTypeFilter;
   // User object to store the current user
   late User? _user;
+  Stream<int>? notificationCount;
 
   @override
   void initState() {
     super.initState();
     // Fetch the current user when the widget is initialized
     _user = FirebaseAuth.instance.currentUser;
+    if (_user != null) {
+      notificationCount = getNotificationCount(_user!.uid);
+    }
   }
 
   // Method to sign out the user
   void _signOut(BuildContext context) {
     signOutFromFirebase(context);
+  }
+
+  Stream<int> getNotificationCount(String userId) {
+    return FirebaseFirestore.instance
+        .collection('notifications')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 
   // Method to navigate to the user profile page
@@ -118,33 +131,57 @@ class _HomePageState extends State<HomePage> {
   // Method to build the actions for the AppBar
   List<Widget> _buildAppBarActions() {
     final actions = <Widget>[];
-    // Display user greeting if user is logged in
     if (_user != null) {
       actions.add(
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(
             'Hi, ${_user!.displayName ?? ''}',
-            style: const TextStyle(
-              fontFamily: 'Gilroy',
-              fontSize: 18,
-            ),
+            style: const TextStyle(fontSize: 18),
           ),
         ),
       );
     }
-    // Notification icon
+
     actions.add(
-      GestureDetector(
-        onTap: _goToNotificationPage,
-        child: const Padding(
-          padding: EdgeInsets.only(right: 15),
-          child: Icon(
-            Icons.notifications_active_outlined,
+      Stack(
+        alignment: Alignment.topRight,
+        children: [
+          IconButton(
+            iconSize: 25,
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: _goToNotificationPage,
           ),
-        ),
+          StreamBuilder<int>(
+            stream: notificationCount,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data! > 0) {
+                return Positioned(
+                  right: 3,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${snapshot.data}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return Container(); // No notifications, don't display the counter
+              }
+            },
+          ),
+        ],
       ),
     );
+
     return actions;
   }
 

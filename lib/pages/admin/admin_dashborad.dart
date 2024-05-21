@@ -3,7 +3,6 @@
 import 'package:eventro/components/show_error_message.dart';
 import 'package:eventro/pages/admin/admin_events.dart';
 import 'package:eventro/pages/admin/admin_home.dart';
-import 'package:eventro/pages/admin/admin_notifcation.dart';
 import 'package:eventro/pages/admin/admin_profile.dart';
 import 'package:eventro/pages/admin/users_page.dart';
 
@@ -50,19 +49,6 @@ class _AdminPageState extends State<AdminPage> {
                   color: Colors.black,
                 ),
               )),
-          actions: [
-            IconButton(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdminNotifcation(),
-                    )),
-                icon: const Icon(
-                  Icons.notifications_active_outlined,
-                  size: 30,
-                  color: Colors.black,
-                ))
-          ],
         ),
         body: SafeArea(child: _pages.elementAt(_currnetindex)),
         bottomNavigationBar: Padding(

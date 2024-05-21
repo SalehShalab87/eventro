@@ -1,6 +1,5 @@
 import 'package:eventro/pages/event/event_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class BookedEventsTile extends StatelessWidget {
@@ -8,7 +7,7 @@ class BookedEventsTile extends StatelessWidget {
   final String eventName;
   final String eventID;
   final int currentAttendees;
-  final double rating;
+  final String rating;
   final VoidCallback onDelete;
   final IconData icon;
 
