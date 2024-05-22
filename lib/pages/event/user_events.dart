@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:eventro/components/booked_events_tile.dart';
+import 'package:eventro/components/user_booked_events_tile.dart';
 import 'package:eventro/models/event.dart';
 import 'package:eventro/pages/event/edit_event.dart';
 import 'package:flutter/material.dart';
@@ -256,8 +257,7 @@ class MyEvents extends StatelessWidget {
                                   }
                                   final eventData = eventSnapshot.data!.data()
                                       as Map<String, dynamic>;
-                                  return BookedEventsTile(
-                                    rating: eventData['averageRating'] ?? 0.0,
+                                  return UserBookedEventsTile(
                                     icon: Icons.close,
                                     imageUrl: eventData['imageUrl'] ?? '',
                                     eventName: eventData['title'] ?? '',
