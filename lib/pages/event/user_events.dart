@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:eventro/components/booked_events_tile.dart';
 import 'package:eventro/components/user_booked_events_tile.dart';
 import 'package:eventro/models/event.dart';
 import 'package:eventro/pages/event/edit_event.dart';

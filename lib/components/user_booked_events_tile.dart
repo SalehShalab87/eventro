@@ -1,5 +1,4 @@
 import 'package:eventro/pages/event/event_details.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserBookedEventsTile extends StatelessWidget {
