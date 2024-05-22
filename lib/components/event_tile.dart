@@ -26,11 +26,23 @@ class EventTile extends StatelessWidget {
                 // event pic
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    event.imageUrl,
+                  child: SizedBox(
                     width: double.infinity,
                     height: 280,
-                    fit: BoxFit.cover,
+                    child: Image.network(
+                      event.imageUrl,
+                      width: double.infinity,
+                      height: 280,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xffEC6408),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(

@@ -1,10 +1,10 @@
 // ignore_for_file: file_names, non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:eventro/components/show_loadingcircle.dart';
+import 'package:eventro/pages/authpages/register_page.dart';
 import 'package:eventro/screens/onboard1.dart';
 import 'package:eventro/screens/onboard2.dart';
 import 'package:eventro/screens/onboard3.dart';
-import 'package:eventro/pages/authpages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -19,13 +19,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   bool OnLastPage = false;
 
-  void navigateToLogin() async {
+  void navigateToRegister() async {
     showLoadingCircle(context); // Show loading indicator
     // Adding a delay to ensure the loading indicator is visible
     await Future.delayed(const Duration(milliseconds: 700));
     await Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) {
-      return const LoginPage();
+      return const RegitserPage();
     }));
     Navigator.of(context, rootNavigator: true)
         .pop(); // Make sure to pop the loading dialog
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                    onTap: navigateToLogin,
+                    onTap: navigateToRegister,
                     child: const Text(
                       'Skip',
                       style: TextStyle(fontFamily: "Gilroy", fontSize: 16),
@@ -71,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   OnLastPage
                       ? GestureDetector(
-                          onTap: navigateToLogin,
+                          onTap: navigateToRegister,
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: const BoxDecoration(
