@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
+import 'dart:async';
+
 import 'package:eventro/components/my_button.dart';
 import 'package:eventro/components/show_error_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,22 +17,34 @@ class EmailVerification extends StatefulWidget {
 class _EmailVerificationState extends State<EmailVerification> {
   bool _isEmailVerified = false;
   bool _isLoading = false;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _checkEmailVerification();
+    _startVerificationCheck();
   }
 
-  Future<void> _checkEmailVerification() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await user.reload();
-      await Future.delayed(const Duration(seconds: 1));
-      setState(() {
-        _isEmailVerified = user.emailVerified;
-      });
-    }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startVerificationCheck() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      User? user = FirebaseAuth.instance.currentUser;
+      await user?.reload();
+      bool isVerified = user?.emailVerified ?? false;
+      if (isVerified) {
+        timer.cancel();
+        if (mounted) {
+          setState(() {
+            _isEmailVerified = true;
+          });
+        }
+      }
+    });
   }
 
   Future<void> resendVerificationEmail(BuildContext context) async {
@@ -89,7 +103,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                 setState(() {
                   _isLoading = true;
                 });
-                await _checkEmailVerification();
+                _startVerificationCheck();
                 if (_isEmailVerified) {
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
