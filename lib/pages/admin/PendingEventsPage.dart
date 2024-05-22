@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventro/components/my_button.dart';
@@ -169,8 +169,10 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
           content: const Text("Are you sure you want to accept this event?"),
           actions: [
             MyButton(
-                onTap: () {
+                onTap: () async {
                   _updateEventStatus(event, 'approved', '');
+                  await _createNotification(
+                      event, 'Event Approved', 'Your event has been approved!');
                   Navigator.pop(context);
                 },
                 text: 'Yes'),
@@ -221,9 +223,11 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
           ),
           actions: [
             MyButton(
-              onTap: () {
+              onTap: () async {
                 if (rejectionReason.isNotEmpty) {
                   _updateEventStatus(event, 'rejected', rejectionReason);
+                  await _createNotification(event, 'Event Rejected',
+                      'Your event has been rejected: $rejectionReason');
                   Navigator.pop(context);
                 } else {
                   // Show error message if rejection reason is empty
@@ -258,6 +262,18 @@ class _PendingEventsPageState extends State<PendingEventsPage> {
       'status': status,
       'rejectionReason':
           rejectionReason, // Save the rejection reason in Firestore
+    });
+  }
+
+  Future<void> _createNotification(
+      Event event, String title, String body) async {
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'userId': event
+          .creatorId, // Assuming `creatorId` is a field in your Event model
+      'eventId': event.eventId,
+      'title': title,
+      'body': body,
+      'createdAt': FieldValue.serverTimestamp(),
     });
   }
 }
