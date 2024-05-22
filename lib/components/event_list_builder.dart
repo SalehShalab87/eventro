@@ -16,8 +16,10 @@ class EventListBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance.collection('eventsCollection').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('eventsCollection')
+          .limit(10)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

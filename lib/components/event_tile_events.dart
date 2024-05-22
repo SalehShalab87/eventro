@@ -30,6 +30,14 @@ class EventTileAll extends StatelessWidget {
                   width: double.infinity,
                   height: 310,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xffEC6408),
+                      ),
+                    );
+                  },
                 ),
               ),
               //price + deatails
