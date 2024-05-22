@@ -16,10 +16,8 @@ class EventListBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('eventsCollection')
-          .limit(10)
-          .snapshots(),
+      stream:
+          FirebaseFirestore.instance.collection('eventsCollection').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -31,7 +29,38 @@ class EventListBuilder extends StatelessWidget {
         }
         var events =
             snapshot.data!.docs.map((doc) => Event.fromSnapshot(doc)).toList();
+        print('Total events fetched: ${events.length}');
+        // Debugging each event
+        events.forEach((event) {
+          bool isApproved = event.approvalStatus == 'approved';
+          bool isUpcoming = event.dateTime!.isAfter(DateTime.now());
+          bool matchesSearchQuery = event.title
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()) ||
+              event.eventType.toLowerCase().contains(searchQuery.toLowerCase());
+          bool matchesEventTypeFilter =
+              eventTypeFilter == null || event.eventType == eventTypeFilter;
 
+          print(
+              'Event ID: ${event.eventId}, Approved: $isApproved, Upcoming: $isUpcoming, Matches Search Query: $matchesSearchQuery, Matches Event Type Filter: $matchesEventTypeFilter');
+        });
+
+// Apply filters
+        events = events
+            .where((event) =>
+                event.approvalStatus == 'approved' &&
+                event.dateTime!.isAfter(DateTime.now()) &&
+                (searchQuery.isEmpty ||
+                    event.title
+                        .toLowerCase()
+                        .contains(searchQuery.toLowerCase()) ||
+                    event.eventType
+                        .toLowerCase()
+                        .contains(searchQuery.toLowerCase())) &&
+                (eventTypeFilter == null || event.eventType == eventTypeFilter))
+            .toList();
+
+        print('Events after filtering: ${events.length}');
         // Determine the filtering logic based on input
         if (searchQuery.isNotEmpty && eventTypeFilter == null) {
           events = events
@@ -78,6 +107,7 @@ class EventListBuilder extends StatelessWidget {
             ),
           );
         }
+        print(events.length);
         return ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: events.length,
